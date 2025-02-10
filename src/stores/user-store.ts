@@ -12,10 +12,6 @@ export const useUserStore = defineStore('user', {
   },
 
   actions: {
-    toggle2FA() {
-      this.is2FAEnabled = !this.is2FAEnabled
-    },
-
     changeUserName(userName: string) {
       this.userName = userName
     },

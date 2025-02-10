@@ -30,11 +30,7 @@
     "sideBarButton": "Side Bar"
   },
   "language": {
-    "brazilian_portuguese": "Português",
-    "english": "English",
-    "spanish": "Spanish",
-    "simplified_chinese": "Simplified Chinese",
-    "persian": "Persian"
+    "english": "English"
   },
   "menu": {
     "auth": "Auth",
@@ -48,7 +44,7 @@
     "settings": "Application settings",
     "pricing-plans": "Pricing plans",
     "payment-methods": "Payment methods",
-    "signup": "Signup",
+    "register": "Signup",
     "recover-password": "Recover password",
     "recover-password-email": "Recover password email",
     "404": "404",
@@ -166,7 +162,7 @@
     "grow": "Tabs grow"
   },
   "helpAndSupport": "Help & support",
-  "aboutVuesticAdmin": "About Vuestic Admin",
+  "aboutVuesticAdmin": "About infoCRM",
   "supportAndConsulting": "Support & Consulting",
   "search": {
     "placeholder": "Search..."

@@ -22,11 +22,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/admin/dashboard/Dashboard.vue'),
       },
       {
-        name: 'settings',
-        path: 'settings',
-        component: () => import('../pages/settings/Settings.vue'),
-      },
-      {
         name: 'preferences',
         path: 'preferences',
         component: () => import('../pages/preferences/Preferences.vue'),
@@ -41,33 +36,6 @@ const routes: Array<RouteRecordRaw> = [
         path: 'projects',
         component: () => import('../pages/projects/ProjectsPage.vue'),
       },
-      {
-        name: 'payments',
-        path: '/payments',
-        component: RouteViewComponent,
-        children: [
-          {
-            name: 'payment-methods',
-            path: 'payment-methods',
-            component: () => import('../pages/payments/PaymentsPage.vue'),
-          },
-          {
-            name: 'billing',
-            path: 'billing',
-            component: () => import('../pages/billing/BillingPage.vue'),
-          },
-          {
-            name: 'pricing-plans',
-            path: 'pricing-plans',
-            component: () => import('../pages/pricing-plans/PricingPlans.vue'),
-          },
-        ],
-      },
-      {
-        name: 'faq',
-        path: '/faq',
-        component: () => import('../pages/faq/FaqPage.vue'),
-      },
     ],
   },
   {
@@ -80,9 +48,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/auth/Login.vue'),
       },
       {
-        name: 'signup',
-        path: 'signup',
-        component: () => import('../pages/auth/Signup.vue'),
+        name: 'register',
+        path: 'register',
+        component: () => import('../pages/auth/Register.vue'),
       },
       {
         name: 'recover-password',
