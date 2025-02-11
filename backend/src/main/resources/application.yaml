@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: infoCRM
+
+  datasource:
+    url: jdbc:postgresql://localhost/infocrm
+    username: infocrm
+    password: infocrm
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false

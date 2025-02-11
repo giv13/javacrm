@@ -1,0 +1,16 @@
+package ru.giv13.infocrm.model;
+
+public enum EPermisson {
+    USER_READ,
+    USER_UPDATE,
+    USER_CREATE,
+    USER_DELETE,
+    PROJECT_READ,
+    PROJECT_UPDATE,
+    PROJECT_CREATE,
+    PROJECT_DELETE,
+    OWN_PROJECT_READ,
+    OWN_PROJECT_UPDATE,
+    OWN_PROJECT_CREATE,
+    OWN_PROJECT_DELETE
+}
