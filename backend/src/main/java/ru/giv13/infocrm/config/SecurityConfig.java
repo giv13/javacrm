@@ -67,8 +67,8 @@ public class SecurityConfig {
         roleRepository.save(adminRole);
 
         Set<User> users = Set.of(
-                User.builder().name("Админ").email("admin@mail.ru").roles(Set.of(adminRole)).password(passwordEncoder().encode("admin")).build(),
-                User.builder().name("Юзер").email("user@mail.ru").roles(Set.of(userRole)).password(passwordEncoder().encode("user")).build()
+                User.builder().name("Админ").username("admin").email("admin@mail.ru").roles(Set.of(adminRole)).password(passwordEncoder().encode("admin")).build(),
+                User.builder().name("Юзер").username("user").email("user@mail.ru").roles(Set.of(userRole)).password(passwordEncoder().encode("user")).build()
         );
         userRepository.saveAll(users);
         return users;

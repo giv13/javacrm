@@ -6,7 +6,15 @@ import ru.giv13.infocrm.model.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+    Optional<User> findByUsernameOrEmail(String username, String email);
 
-    boolean existsByEmail(String email);
+    default Optional<User> findByUsernameOrEmail(String username) {
+        return findByUsernameOrEmail(username, username);
+    };
+
+    boolean existsByUsernameOrEmail(String username, String email);
+
+    default boolean existsByUsernameOrEmail(String username) {
+        return existsByUsernameOrEmail(username, username);
+    }
 }

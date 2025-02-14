@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 import ru.giv13.infocrm.model.User;
 
 import javax.crypto.SecretKey;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -46,14 +44,14 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, User user) {
-        return extractEmail(token).equals(user.getEmail()) && !isTokenExpired(token);
+        return extractUsername(token).equals(user.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
-    public String extractEmail(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
