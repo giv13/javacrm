@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.filter;
+package ru.giv13.infocrm.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,9 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.giv13.infocrm.model.User;
-import ru.giv13.infocrm.service.JwtService;
-import ru.giv13.infocrm.service.UserService;
+import ru.giv13.infocrm.user.User;
+import ru.giv13.infocrm.user.UserService;
 
 import java.io.IOException;
 import java.util.Arrays;

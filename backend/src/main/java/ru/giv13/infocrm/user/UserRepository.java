@@ -1,7 +1,6 @@
-package ru.giv13.infocrm.repository;
+package ru.giv13.infocrm.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.giv13.infocrm.model.User;
 
 import java.util.Optional;
 

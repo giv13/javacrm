@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.dto.request;
+package ru.giv13.infocrm.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

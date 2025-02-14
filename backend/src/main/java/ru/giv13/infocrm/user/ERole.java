@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.model;
+package ru.giv13.infocrm.user;
 
 public enum ERole {
     ADMIN,

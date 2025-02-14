@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.model;
+package ru.giv13.infocrm.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

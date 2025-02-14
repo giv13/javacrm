@@ -1,11 +1,11 @@
-package ru.giv13.infocrm.controller;
+package ru.giv13.infocrm.main;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.giv13.infocrm.model.User;
+import ru.giv13.infocrm.user.User;
 
 @RestController
 @RequestMapping

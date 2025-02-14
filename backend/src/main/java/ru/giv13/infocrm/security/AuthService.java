@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.service;
+package ru.giv13.infocrm.security;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,13 +8,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.giv13.infocrm.dto.request.LoginRequest;
-import ru.giv13.infocrm.dto.request.RegisterRequest;
-import ru.giv13.infocrm.dto.response.AuthResponse;
-import ru.giv13.infocrm.model.ERole;
-import ru.giv13.infocrm.model.User;
-import ru.giv13.infocrm.repository.RoleRepository;
-import ru.giv13.infocrm.repository.UserRepository;
+import ru.giv13.infocrm.user.ERole;
+import ru.giv13.infocrm.user.RoleRepository;
+import ru.giv13.infocrm.user.User;
+import ru.giv13.infocrm.user.UserRepository;
+import ru.giv13.infocrm.user.dto.LoginRequest;
+import ru.giv13.infocrm.user.dto.RegisterRequest;
 
 import java.util.Set;
 

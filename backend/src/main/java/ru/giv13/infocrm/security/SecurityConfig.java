@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.config;
+package ru.giv13.infocrm.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,11 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.giv13.infocrm.filter.JwtAuthFilter;
-import ru.giv13.infocrm.model.*;
-import ru.giv13.infocrm.repository.PermissionRepository;
-import ru.giv13.infocrm.repository.RoleRepository;
-import ru.giv13.infocrm.repository.UserRepository;
+import ru.giv13.infocrm.user.*;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,11 +1,9 @@
-package ru.giv13.infocrm.service;
+package ru.giv13.infocrm.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.giv13.infocrm.model.User;
-import ru.giv13.infocrm.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.dto.response;
+package ru.giv13.infocrm.security;
 
 import lombok.Builder;
 import lombok.Data;
