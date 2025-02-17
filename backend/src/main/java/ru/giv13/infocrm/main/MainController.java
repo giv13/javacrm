@@ -1,10 +1,12 @@
 package ru.giv13.infocrm.main;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.giv13.infocrm.system.Response;
 import ru.giv13.infocrm.user.User;
 
 @RestController
@@ -12,8 +14,8 @@ import ru.giv13.infocrm.user.User;
 @RequiredArgsConstructor
 public class MainController {
     @GetMapping
-    public String index(Authentication authentication) {
+    public ResponseEntity<Response> index(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return "Твои роли и разрешения: " + user.getAuthorities();
+        return Response.ok("Твои роли и разрешения: " + user.getAuthorities());
     }
 }

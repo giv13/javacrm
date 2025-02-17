@@ -15,6 +15,7 @@ import ru.giv13.infocrm.user.UserRepository;
 import ru.giv13.infocrm.user.dto.LoginRequest;
 import ru.giv13.infocrm.user.dto.RegisterRequest;
 
+import java.time.Duration;
 import java.util.Set;
 
 @Service
@@ -27,14 +28,16 @@ public class AuthService {
     private final JwtService jwtService;
     private final HttpServletResponse httpServletResponse;
     @Value("${security.jwt.expiration}")
-    private int jwtExpiration;
+    private Duration jwtExpiration;
+    @Value("${security.jwt.token-name}")
+    private String tokenName;
 
     public AuthResponse register(RegisterRequest request) {
         User.UserBuilder userBuilder = User
                 .builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()));
+                .username(request.username())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()));
         roleRepository.findByName(ERole.USER).ifPresent(userRole -> userBuilder.roles(Set.of(userRole)));
         User user = userBuilder.build();
         userRepository.save(user);
@@ -42,19 +45,19 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        User user = userRepository.findByUsernameOrEmail(request.getUsername()).orElseThrow();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        User user = userRepository.findByUsernameOrEmail(request.username()).orElseThrow();
         return generateToken(user);
     }
 
     private AuthResponse generateToken(User user) {
         String token = jwtService.generateToken(user);
-        Cookie cookie = new Cookie("accessToken", token);
-        cookie.setMaxAge(jwtExpiration);
+        Cookie cookie = new Cookie(tokenName, token);
+        cookie.setMaxAge((int) jwtExpiration.toSeconds());
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
-        return AuthResponse.builder().token(token).build();
+        return new AuthResponse(token);
     }
 }

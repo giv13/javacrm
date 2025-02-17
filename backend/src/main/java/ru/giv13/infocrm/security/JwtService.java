@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ru.giv13.infocrm.user.User;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class JwtService {
     @Value("${security.jwt.secret}")
     private String jwtSecret;
     @Value("${security.jwt.expiration}")
-    private int jwtExpiration;
+    private Duration jwtExpiration;
 
     public String generateToken(User user) {
         return generateToken(user, new HashMap<>());
@@ -30,7 +31,7 @@ public class JwtService {
         return buildToken(user, claims, jwtExpiration);
     }
 
-    private String buildToken(User user, Map<String, Object> claims, int expiration) {
+    private String buildToken(User user, Map<String, Object> claims, Duration expiration) {
         claims.put("authorities", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray());
         return Jwts
                 .builder()
@@ -38,7 +39,7 @@ public class JwtService {
                 .subject(user.getUsername())
                 .claims(claims)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + expiration.toMillis()))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
