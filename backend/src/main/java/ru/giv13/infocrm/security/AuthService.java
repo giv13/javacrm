@@ -14,6 +14,8 @@ import ru.giv13.infocrm.user.User;
 import ru.giv13.infocrm.user.UserRepository;
 import ru.giv13.infocrm.user.dto.LoginRequest;
 import ru.giv13.infocrm.user.dto.RegisterRequest;
+import ru.giv13.infocrm.user.dto.UserDto;
+import ru.giv13.infocrm.user.dto.UserToUserDtoConverter;
 
 import java.time.Duration;
 import java.util.Set;
@@ -27,12 +29,13 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final HttpServletResponse httpServletResponse;
+    private final UserToUserDtoConverter userToUserDtoConverter;
     @Value("${security.jwt.expiration}")
     private Duration jwtExpiration;
     @Value("${security.jwt.token-name}")
     private String tokenName;
 
-    public AuthResponse register(RegisterRequest request) {
+    public UserDto register(RegisterRequest request) {
         User.UserBuilder userBuilder = User
                 .builder()
                 .username(request.username())
@@ -44,13 +47,13 @@ public class AuthService {
         return generateToken(user);
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public UserDto login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         User user = userRepository.findByUsernameOrEmail(request.username()).orElseThrow();
         return generateToken(user);
     }
 
-    private AuthResponse generateToken(User user) {
+    private UserDto generateToken(User user) {
         String token = jwtService.generateToken(user);
         Cookie cookie = new Cookie(tokenName, token);
         cookie.setMaxAge((int) jwtExpiration.toSeconds());
@@ -58,6 +61,6 @@ public class AuthService {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
-        return new AuthResponse(token);
+        return userToUserDtoConverter.convert(user);
     }
 }

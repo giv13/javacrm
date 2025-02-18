@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.giv13.infocrm.user.User;
 
@@ -32,10 +31,8 @@ public class JwtService {
     }
 
     private String buildToken(User user, Map<String, Object> claims, Duration expiration) {
-        claims.put("authorities", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray());
         return Jwts
                 .builder()
-                .header().type("JWT").and()
                 .subject(user.getUsername())
                 .claims(claims)
                 .issuedAt(new Date(System.currentTimeMillis()))

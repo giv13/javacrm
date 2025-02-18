@@ -32,8 +32,9 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false, length = 100)
     private String password;
+    @Builder.Default
     @ColumnDefault("true")
-    private boolean isActive;
+    private boolean isActive = true;
     @Lob
     private byte[] image;
     @ManyToMany(fetch = FetchType.EAGER)
