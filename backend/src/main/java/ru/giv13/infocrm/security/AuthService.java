@@ -36,6 +36,9 @@ public class AuthService {
     private String tokenName;
 
     public UserDto register(RegisterRequest request) {
+        if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
+            throw new UserAlreadyExistsException("Такой пользователь уже существует");
+        }
         User.UserBuilder userBuilder = User
                 .builder()
                 .username(request.username())

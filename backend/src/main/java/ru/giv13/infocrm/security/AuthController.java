@@ -1,7 +1,9 @@
 package ru.giv13.infocrm.security;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +19,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("register")
-    public ResponseEntity<Response> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Response> register(@Validated(RegisterRequest.OrderedValidationGroups.class) @RequestBody RegisterRequest request) {
         return Response.ok(authService.register(request));
     }
 
     @PostMapping("login")
-    public ResponseEntity<Response> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Response> login(@Valid @RequestBody LoginRequest request) {
         return Response.ok(authService.login(request));
     }
 }
