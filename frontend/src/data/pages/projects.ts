@@ -1,5 +1,5 @@
-import api from '../../services/api'
 import { Project } from '../../pages/projects/types'
+import { api } from '../../services/api'
 
 export type Pagination = {
   page: number

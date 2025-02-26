@@ -76,7 +76,7 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
-import api from "../../services/api";
+import { api, post } from "../../services/api";
 
 const { validate } = useForm('form')
 const { push } = useRouter()
@@ -89,7 +89,7 @@ const formData = reactive({
   passwordConfirmation: '',
 })
 
-const formErrors = reactive<Record<string, string[]>>({
+const formErrors = reactive({
   email: [],
   username: [],
   password: [],
@@ -98,31 +98,11 @@ const formErrors = reactive<Record<string, string[]>>({
 
 const submit = () => {
   if (validate()) {
-    return fetch(api.register(), {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify(formData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(r => r.json())
-      .then(r => {
-        if (r.success) {
-          localStorage.setItem("user", JSON.stringify(r.data));
-          init({message: "Успешная регистрация в системе", color: 'success'})
-          push({name: 'dashboard'})
-        } else {
-          if (typeof r.error === 'object') {
-            for (const [field, message] of Object.entries(r.error)) {
-              if (field in formErrors && typeof message === 'string') {
-                formErrors[field] = message.split("|")
-              }
-            }
-          } else {
-            init({message: r.error, color: 'danger'})
-          }
-        }
-      })
+    return post(api.register(), formData, formErrors).then(r => {
+      localStorage.setItem("user", JSON.stringify(r.data));
+      init({ message: "Успешная регистрация в системе", color: 'success' })
+      push({ name: 'dashboard' })
+    })
   }
 }
 </script>
