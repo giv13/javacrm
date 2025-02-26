@@ -1,24 +1,28 @@
 <template>
   <VaForm ref="form" @submit.prevent="submit">
-    <h1 class="font-semibold text-4xl mb-4">Log in</h1>
+    <h1 class="font-semibold text-4xl mb-4">Вход</h1>
     <p class="text-base mb-4 leading-5">
-      New to infoCRM?
-      <RouterLink :to="{ name: 'register' }" class="font-semibold text-primary">Sign up</RouterLink>
+      Нет аккаунта?
+      <RouterLink :to="{ name: 'register' }" class="font-semibold text-primary">Создать аккаунт</RouterLink>
     </p>
     <VaInput
-      v-model="formData.email"
-      :rules="[validators.required, validators.email]"
+      v-model="formData.username"
+      :error="formErrors.username.length > 0"
+      :errorMessages="formErrors.username"
+      @input="formErrors.username = []"
       class="mb-4"
-      label="Email"
-      type="email"
+      label="Имя пользователя"
+      type="text"
     />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
         v-model="formData.password"
-        :rules="[validators.required]"
+        :error="formErrors.password.length > 0"
+        :errorMessages="formErrors.password"
+        @input="formErrors.password = []"
         :type="isPasswordVisible.value ? 'text' : 'password'"
         class="mb-4"
-        label="Password"
+        label="Пароль"
         @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
@@ -31,15 +35,8 @@
       </VaInput>
     </VaValue>
 
-    <div class="auth-layout__options flex flex-col sm:flex-row items-start sm:items-center justify-between">
-      <VaCheckbox v-model="formData.keepLoggedIn" class="mb-2 sm:mb-0" label="Keep me signed in on this device" />
-      <RouterLink :to="{ name: 'recover-password' }" class="mt-2 sm:mt-0 sm:ml-1 font-semibold text-primary">
-        Forgot password?
-      </RouterLink>
-    </div>
-
     <div class="flex justify-center mt-4">
-      <VaButton class="w-full" @click="submit"> Login</VaButton>
+      <VaButton class="w-full" @click="submit"> Войти</VaButton>
     </div>
   </VaForm>
 </template>
@@ -48,22 +45,49 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
-import { validators } from '../../services/utils'
+import api from "../../services/api";
 
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
 
 const formData = reactive({
-  email: '',
+  username: '',
   password: '',
-  keepLoggedIn: false,
 })
+
+const formErrors = reactive<Record<string, string[]>>({
+  username: [],
+  password: [],
+});
 
 const submit = () => {
   if (validate()) {
-    init({ message: "You've successfully logged in", color: 'success' })
-    push({ name: 'dashboard' })
+    return fetch(api.login(), {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(r => r.json())
+      .then(r => {
+        if (r.success) {
+          localStorage.setItem("user", JSON.stringify(r.data));
+          init({ message: "Успешный вход в систему", color: 'success' })
+          push({ name: 'dashboard' })
+        } else {
+          if (typeof r.error === 'object') {
+            for (const [field, message] of Object.entries(r.error)) {
+              if (field in formErrors && typeof message === 'string') {
+                formErrors[field] = message.split("|")
+              }
+            }
+          } else {
+            init({ message: r.error, color: 'danger' })
+          }
+        }
+      })
   }
 }
 </script>

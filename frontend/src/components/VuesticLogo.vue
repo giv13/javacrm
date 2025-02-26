@@ -1,3 +1,23 @@
 <template>
-  <h1 class="text-xl font-semibold va-link">infoCRM</h1>
+  <h1 class="va-h3" :style="{ 'color': color }">infoCRM</h1>
 </template>
+
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useColors } from 'vuestic-ui'
+
+const { getColor } = useColors()
+
+const props = withDefaults(
+  defineProps<{
+    start?: string
+  }>(),
+  {
+    start: 'primary',
+  },
+)
+
+const color = computed(() => {
+  return getColor(props.start)
+})
+</script>

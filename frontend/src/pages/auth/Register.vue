@@ -1,26 +1,40 @@
 <template>
   <VaForm ref="form" @submit.prevent="submit">
-    <h1 class="font-semibold text-4xl mb-4">Sign up</h1>
+    <h1 class="font-semibold text-4xl mb-4">Регистрация</h1>
     <p class="text-base mb-4 leading-5">
-      Have an account?
-      <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Login</RouterLink>
+      Уже есть аккаунт?
+      <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Войти</RouterLink>
     </p>
     <VaInput
       v-model="formData.email"
-      :rules="[(v) => !!v || 'Email field is required', (v) => /.+@.+\..+/.test(v) || 'Email should be valid']"
+      :error="formErrors.email.length > 0"
+      :errorMessages="formErrors.email"
+      @input="formErrors.email = []"
       class="mb-4"
-      label="Email"
+      label="E-mail"
       type="email"
+    />
+    <VaInput
+      v-model="formData.username"
+      :error="formErrors.username.length > 0"
+      :errorMessages="formErrors.username"
+      @input="formErrors.username = []"
+      class="mb-4"
+      label="Имя пользователя"
+      type="text"
     />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
         ref="password1"
         v-model="formData.password"
-        :rules="passwordRules"
+        :error="formErrors.password.length > 0"
+        :errorMessages="formErrors.password"
+        :errorCount="3"
+        @input="formErrors.password = []"
         :type="isPasswordVisible.value ? 'text' : 'password'"
         class="mb-4"
-        label="Password"
-        messages="Password should be 8+ characters: letters, numbers, and special characters."
+        label="Пароль"
+        messages="От 8 символов, должен содержать латинские буквы в нижнем и верхнем регистре, цифры и спецсимволы"
         @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
@@ -33,14 +47,13 @@
       </VaInput>
       <VaInput
         ref="password2"
-        v-model="formData.repeatPassword"
-        :rules="[
-          (v) => !!v || 'Repeat Password field is required',
-          (v) => v === formData.password || 'Passwords don\'t match',
-        ]"
+        v-model="formData.passwordConfirmation"
+        :error="formErrors.passwordConfirmation.length > 0"
+        :errorMessages="formErrors.passwordConfirmation"
+        @input="formErrors.passwordConfirmation = []"
         :type="isPasswordVisible.value ? 'text' : 'password'"
         class="mb-4"
-        label="Repeat Password"
+        label="Повторите пароль"
         @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
@@ -54,7 +67,7 @@
     </VaValue>
 
     <div class="flex justify-center mt-4">
-      <VaButton class="w-full" @click="submit"> Create account</VaButton>
+      <VaButton class="w-full" @click="submit"> Создать аккаунт</VaButton>
     </div>
   </VaForm>
 </template>
@@ -63,6 +76,7 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
+import api from "../../services/api";
 
 const { validate } = useForm('form')
 const { push } = useRouter()
@@ -70,25 +84,45 @@ const { init } = useToast()
 
 const formData = reactive({
   email: '',
+  username: '',
   password: '',
-  repeatPassword: '',
+  passwordConfirmation: '',
 })
+
+const formErrors = reactive<Record<string, string[]>>({
+  email: [],
+  username: [],
+  password: [],
+  passwordConfirmation: [],
+});
 
 const submit = () => {
   if (validate()) {
-    init({
-      message: "You've successfully signed up",
-      color: 'success',
-    })
-    push({ name: 'dashboard' })
+    return fetch(api.register(), {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(r => r.json())
+      .then(r => {
+        if (r.success) {
+          localStorage.setItem("user", JSON.stringify(r.data));
+          init({message: "Успешная регистрация в системе", color: 'success'})
+          push({name: 'dashboard'})
+        } else {
+          if (typeof r.error === 'object') {
+            for (const [field, message] of Object.entries(r.error)) {
+              if (field in formErrors && typeof message === 'string') {
+                formErrors[field] = message.split("|")
+              }
+            }
+          } else {
+            init({message: r.error, color: 'danger'})
+          }
+        }
+      })
   }
 }
-
-const passwordRules: ((v: string) => boolean | string)[] = [
-  (v) => !!v || 'Password field is required',
-  (v) => (v && v.length >= 8) || 'Password must be at least 8 characters long',
-  (v) => (v && /[A-Za-z]/.test(v)) || 'Password must contain at least one letter',
-  (v) => (v && /\d/.test(v)) || 'Password must contain at least one number',
-  (v) => (v && /[!@#$%^&*(),.?":{}|<>]/.test(v)) || 'Password must contain at least one special character',
-]
 </script>

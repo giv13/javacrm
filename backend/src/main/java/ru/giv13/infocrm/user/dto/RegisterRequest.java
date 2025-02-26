@@ -1,6 +1,5 @@
 package ru.giv13.infocrm.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +11,7 @@ public record RegisterRequest(
         @NotBlank(groups = FirstValidationGroup.class) String username,
         @NotBlank(groups = FirstValidationGroup.class) @Email(groups = SecondValidationGroup.class) String email,
         @NotBlank(groups = FirstValidationGroup.class) @Password(groups = SecondValidationGroup.class) String password,
-        @JsonProperty("password_confirmation") @NotBlank(groups = FirstValidationGroup.class) String passwordConfirmation
+        @NotBlank(groups = FirstValidationGroup.class) String passwordConfirmation
 ) {
     public interface FirstValidationGroup {}
     public interface SecondValidationGroup {}
