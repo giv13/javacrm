@@ -1,57 +1,62 @@
 <template>
   <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
     <VaAccordion v-model="value" multiple>
-      <VaCollapse v-for="(route, index) in navigationRoutes.routes" :key="index">
-        <template #header="{ value: isCollapsed }">
-          <VaSidebarItem
-            :to="route.children ? undefined : { name: route.name }"
-            :active="routeHasActiveChild(route)"
-            :active-color="activeColor"
-            :text-color="textColor(route)"
-            :aria-label="`${route.children ? 'Open category ' : 'Visit'} ${t(route.displayName)}`"
-            role="button"
-            hover-opacity="0.10"
-          >
-            <VaSidebarItemContent class="py-3 pr-2 pl-4">
-              <VaIcon
-                v-if="route.meta.icon"
-                aria-hidden="true"
-                :name="route.meta.icon"
-                size="20px"
-                :color="iconColor(route)"
-              />
-              <VaSidebarItemTitle class="flex justify-between items-center leading-5 font-semibold">
-                {{ t(route.displayName) }}
-                <VaIcon v-if="route.children" :name="arrowDirection(isCollapsed)" size="20px" />
-              </VaSidebarItemTitle>
-            </VaSidebarItemContent>
-          </VaSidebarItem>
-        </template>
-        <template #body>
-          <div v-for="(childRoute, index2) in route.children" :key="index2">
+      <template v-for="(route, index) in navigationRoutes.routes" :key="index">
+        <VaCollapse v-if="!route.meta || !route.meta.authorities || (Array.isArray(route.meta.authorities) && route.meta.authorities.some(r => user.authorities.includes(r)))">
+          <template #header="{ value: isCollapsed }">
             <VaSidebarItem
-              :to="{ name: childRoute.name }"
-              :active="isActiveChildRoute(childRoute)"
+              :to="route.children ? undefined : { name: route.name }"
+              :active="routeHasActiveChild(route)"
               :active-color="activeColor"
-              :text-color="textColor(childRoute)"
-              :aria-label="`Visit ${t(route.displayName)}`"
+              :text-color="textColor(route)"
+              :aria-label="`${route.children ? 'Open category ' : 'Visit'} ${t(route.displayName)}`"
+              role="button"
               hover-opacity="0.10"
             >
-              <VaSidebarItemContent class="py-3 pr-2 pl-11">
-                <VaSidebarItemTitle class="leading-5 font-semibold">
-                  {{ t(childRoute.displayName) }}
+              <VaSidebarItemContent class="py-3 pr-2 pl-4">
+                <VaIcon
+                  v-if="route.meta.icon"
+                  aria-hidden="true"
+                  :name="route.meta.icon"
+                  size="20px"
+                  :color="iconColor(route)"
+                />
+                <VaSidebarItemTitle class="flex justify-between items-center leading-5 font-semibold">
+                  {{ t(route.displayName) }}
+                  <VaIcon v-if="route.children" :name="arrowDirection(isCollapsed)" size="20px" />
                 </VaSidebarItemTitle>
               </VaSidebarItemContent>
             </VaSidebarItem>
-          </div>
-        </template>
-      </VaCollapse>
+          </template>
+          <template #body>
+            <template v-for="(childRoute, index2) in route.children" :key="index2">
+              <div v-if="!childRoute.meta || !childRoute.meta.authorities || (Array.isArray(childRoute.meta.authorities) && childRoute.meta.authorities.some(r => user.authorities.includes(r)))">
+                <VaSidebarItem
+                  :to="{ name: childRoute.name }"
+                  :active="isActiveChildRoute(childRoute)"
+                  :active-color="activeColor"
+                  :text-color="textColor(childRoute)"
+                  :aria-label="`Visit ${t(route.displayName)}`"
+                  hover-opacity="0.10"
+                >
+                  <VaSidebarItemContent class="py-3 pr-2 pl-11">
+                    <VaSidebarItemTitle class="leading-5 font-semibold">
+                      {{ t(childRoute.displayName) }}
+                    </VaSidebarItemTitle>
+                  </VaSidebarItemContent>
+                </VaSidebarItem>
+              </div>
+            </template>
+          </template>
+        </VaCollapse>
+      </template>
     </VaAccordion>
   </VaSidebar>
 </template>
 <script lang="ts">
 import { defineComponent, watch, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '../../stores/user-store'
 
 import { useI18n } from 'vue-i18n'
 import { useColors } from 'vuestic-ui'
@@ -98,6 +103,7 @@ export default defineComponent({
     const iconColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'secondary')
     const textColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'textPrimary')
     const arrowDirection = (state: boolean) => (state ? 'va-arrow-up' : 'va-arrow-down')
+    const { user } = useUserStore()
 
     watch(() => route.fullPath, setActiveExpand, { immediate: true })
 
@@ -114,6 +120,7 @@ export default defineComponent({
       iconColor,
       textColor,
       arrowDirection,
+      user,
     }
   },
 })

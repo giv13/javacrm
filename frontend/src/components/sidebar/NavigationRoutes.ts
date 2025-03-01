@@ -1,7 +1,7 @@
 export interface INavigationRoute {
   name: string
   displayName: string
-  meta: { icon: string }
+  meta: { icon: string, authorities: Array<string> }
   children?: INavigationRoute[]
 }
 
@@ -23,6 +23,7 @@ export default {
       displayName: 'menu.users',
       meta: {
         icon: 'group',
+        authorities: ['USER_READ'],
       },
     },
     {
@@ -30,34 +31,7 @@ export default {
       displayName: 'menu.projects',
       meta: {
         icon: 'folder_shared',
-      },
-    },
-    {
-      name: 'auth',
-      displayName: 'menu.auth',
-      meta: {
-        icon: 'login',
-      },
-      children: [
-        {
-          name: 'login',
-          displayName: 'menu.login',
-        },
-        {
-          name: 'register',
-          displayName: 'menu.register',
-        },
-        {
-          name: 'recover-password',
-          displayName: 'menu.recover-password',
-        },
-      ],
-    },
-    {
-      name: '404',
-      displayName: 'menu.404',
-      meta: {
-        icon: 'vuestic-iconset-files',
+        authorities: ['PROJECT_READ'],
       },
     },
     {
