@@ -33,6 +33,7 @@
     "english": "English"
   },
   "menu": {
+    "home": "Home",
     "auth": "Auth",
     "buttons": "Buttons",
     "timelines": "Timelines",

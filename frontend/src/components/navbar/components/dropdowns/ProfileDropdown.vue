@@ -14,8 +14,8 @@
         :style="{ '--hover-color': hoverColor }"
       >
         <VaList v-for="group in options" :key="group.name">
-          <header v-if="group.name" class="uppercase text-[var(--va-secondary)] opacity-80 font-bold text-xs px-4">
-            {{ group.name }}
+          <header v-if="group.title || group.name" class="uppercase text-[var(--va-secondary)] opacity-80 font-bold text-xs px-4">
+            {{ group.title || t(`user.${group.name}`) }}
           </header>
           <VaListItem
             v-for="item in group.list"
@@ -25,7 +25,7 @@
             @click="handleClick(item.click)"
           >
             <VaIcon :name="item.icon" class="pr-1" color="secondary" />
-            {{ item.name }}
+            {{ t(`user.${item.name}`) }}
           </VaListItem>
           <VaListSeparator v-if="group.separator" class="mx-3 my-2" />
         </VaList>
@@ -71,7 +71,8 @@ type ProfileListItem = {
 }
 
 type ProfileOptions = {
-  name: string
+  name?: string
+  title?: string
   separator: boolean
   list: ProfileListItem[]
 }
@@ -83,16 +84,16 @@ withDefaults(
   {
     options: () => [
       {
-        name: useUserStore().user.username,
+        title: useUserStore().user.username,
         separator: true,
         list: [
           {
-            name: 'Настройки',
+            name: 'profile',
             to: 'preferences',
             icon: 'mso-account_circle',
           },
           {
-            name: 'Проекты',
+            name: 'projects',
             to: 'projects',
             icon: 'mso-favorite',
           },
@@ -103,7 +104,7 @@ withDefaults(
         separator: false,
         list: [
           {
-            name: 'Выход',
+            name: 'logout',
             click: 'submit',
             icon: 'mso-logout',
           },

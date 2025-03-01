@@ -9,7 +9,7 @@
 
     <nav class="flex items-center">
       <VaBreadcrumbs>
-        <VaBreadcrumbsItem label="Home" to="/" />
+        <VaBreadcrumbsItem :label="t(`menu.home`)" to="/" />
         <VaBreadcrumbsItem
           v-for="item in items"
           :key="item.label"
