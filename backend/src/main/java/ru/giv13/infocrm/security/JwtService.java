@@ -4,6 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.giv13.infocrm.user.User;
@@ -11,30 +14,44 @@ import ru.giv13.infocrm.user.User;
 import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+    private final HttpServletResponse httpServletResponse;
     @Value("${security.jwt.secret}")
     private String jwtSecret;
     @Value("${security.jwt.expiration}")
     private Duration jwtExpiration;
+    @Value("${security.jwt.token-name}")
+    private String tokenName;
 
-    public String generateToken(User user) {
-        return generateToken(user, new HashMap<>());
+    public void generateCookie(User user) {
+        String token = generateToken(user);
+        Cookie cookie = new Cookie(tokenName, token);
+        cookie.setMaxAge((int) jwtExpiration.toSeconds());
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        httpServletResponse.addCookie(cookie);
     }
 
-    public String generateToken(User user, Map<String, Object> claims) {
-        return buildToken(user, claims, jwtExpiration);
+    public void eraseCookie() {
+        Cookie cookie = new Cookie(tokenName, "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        httpServletResponse.addCookie(cookie);
     }
 
-    private String buildToken(User user, Map<String, Object> claims, Duration expiration) {
+    private String generateToken(User user) {
+        return buildToken(user, jwtExpiration);
+    }
+
+    private String buildToken(User user, Duration expiration) {
         return Jwts
                 .builder()
                 .subject(user.getUsername())
-                .claims(claims)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration.toMillis()))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)

@@ -1,5 +1,6 @@
 <template>
-  <RouterView />
+  <Forbidden v-if="useRoute().meta.forbidden" />
+  <RouterView v-else />
 </template>
 
 <style lang="scss">
@@ -14,3 +15,8 @@ body {
   min-width: 20rem;
 }
 </style>
+
+<script setup>
+  import Forbidden from './pages/403.vue';
+  import { useRoute } from "vue-router";
+</script>

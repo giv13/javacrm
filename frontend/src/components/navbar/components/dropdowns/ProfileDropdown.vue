@@ -15,16 +15,17 @@
       >
         <VaList v-for="group in options" :key="group.name">
           <header v-if="group.name" class="uppercase text-[var(--va-secondary)] opacity-80 font-bold text-xs px-4">
-            {{ t(`user.${group.name}`) }}
+            {{ group.name }}
           </header>
           <VaListItem
             v-for="item in group.list"
             :key="item.name"
             class="menu-item px-4 text-base cursor-pointer h-8"
             v-bind="resolveLinkAttribute(item)"
+            @click="handleClick(item.click)"
           >
             <VaIcon :name="item.icon" class="pr-1" color="secondary" />
-            {{ t(`user.${item.name}`) }}
+            {{ item.name }}
           </VaListItem>
           <VaListSeparator v-if="group.separator" class="mx-3 my-2" />
         </VaList>
@@ -36,12 +37,31 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useColors } from 'vuestic-ui'
+import { useColors, useToast } from 'vuestic-ui'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../../../../stores/user-store'
+import { api, post } from '../../../../services/api'
 
 const { colors, setHSLAColor } = useColors()
 const hoverColor = computed(() => setHSLAColor(colors.focus, { a: 0.1 }))
 
 const { t } = useI18n()
+
+const handleClick = function(fn) {
+  this[fn]()
+}
+
+const { push } = useRouter()
+const { init } = useToast()
+const { logout } = useUserStore()
+
+const submit = () => {
+  return post(api.logout()).finally(r => {
+    logout()
+    init({ message: 'Вы вышли из системы', color: 'success' })
+    push({ name: 'login' })
+  })
+}
 
 type ProfileListItem = {
   name: string
@@ -63,16 +83,16 @@ withDefaults(
   {
     options: () => [
       {
-        name: 'account',
+        name: useUserStore().user.username,
         separator: true,
         list: [
           {
-            name: 'profile',
+            name: 'Настройки',
             to: 'preferences',
             icon: 'mso-account_circle',
           },
           {
-            name: 'projects',
+            name: 'Проекты',
             to: 'projects',
             icon: 'mso-favorite',
           },
@@ -83,8 +103,8 @@ withDefaults(
         separator: false,
         list: [
           {
-            name: 'logout',
-            to: 'login',
+            name: 'Выход',
+            click: 'submit',
             icon: 'mso-logout',
           },
         ],

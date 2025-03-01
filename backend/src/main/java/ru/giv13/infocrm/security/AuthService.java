@@ -1,9 +1,6 @@
 package ru.giv13.infocrm.security;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +14,6 @@ import ru.giv13.infocrm.user.dto.RegisterRequest;
 import ru.giv13.infocrm.user.dto.UserDto;
 import ru.giv13.infocrm.user.dto.UserToUserDtoConverter;
 
-import java.time.Duration;
 import java.util.Set;
 
 @Service
@@ -28,12 +24,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final HttpServletResponse httpServletResponse;
     private final UserToUserDtoConverter userToUserDtoConverter;
-    @Value("${security.jwt.expiration}")
-    private Duration jwtExpiration;
-    @Value("${security.jwt.token-name}")
-    private String tokenName;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
@@ -47,23 +38,19 @@ public class AuthService {
         roleRepository.findByName(ERole.USER).ifPresent(userRole -> userBuilder.roles(Set.of(userRole)));
         User user = userBuilder.build();
         userRepository.save(user);
-        return generateToken(user);
+        jwtService.generateCookie(user);
+        return userToUserDtoConverter.convert(user);
     }
 
     public UserDto login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         User user = userRepository.findByUsernameOrEmail(request.username()).orElseThrow();
-        return generateToken(user);
+        jwtService.generateCookie(user);
+        return userToUserDtoConverter.convert(user);
     }
 
-    private UserDto generateToken(User user) {
-        String token = jwtService.generateToken(user);
-        Cookie cookie = new Cookie(tokenName, token);
-        cookie.setMaxAge((int) jwtExpiration.toSeconds());
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        httpServletResponse.addCookie(cookie);
-        return userToUserDtoConverter.convert(user);
+    public Object logout() {
+        jwtService.eraseCookie();
+        return null;
     }
 }

@@ -43,13 +43,16 @@
 
 <script lang="ts" setup>
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
-import { api, post } from "../../services/api";
+import { api, post } from '../../services/api'
+import { useUserStore } from '../../stores/user-store'
 
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
+const { login } = useUserStore()
+const { query } = useRoute()
 
 const formData = reactive({
   username: '',
@@ -64,9 +67,10 @@ const formErrors = reactive({
 const submit = () => {
   if (validate()) {
     return post(api.login(), formData, formErrors).then(r => {
-      localStorage.setItem("user", JSON.stringify(r.data));
-      init({ message: "Успешный вход в систему", color: 'success' })
-      push({ name: 'dashboard' })
+      login(r.data)
+      init({ message: 'Вы вошли в систему', color: 'success' })
+      const redirectPath = Array.isArray(query.redirect) ? query.redirect[0] : query.redirect;
+      push(redirectPath || '/')
     })
   }
 }

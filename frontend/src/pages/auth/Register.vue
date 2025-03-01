@@ -76,11 +76,13 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
-import { api, post } from "../../services/api";
+import { api, post } from '../../services/api';
+import { useUserStore } from '../../stores/user-store';
 
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
+const { login } = useUserStore()
 
 const formData = reactive({
   email: '',
@@ -99,9 +101,9 @@ const formErrors = reactive({
 const submit = () => {
   if (validate()) {
     return post(api.register(), formData, formErrors).then(r => {
-      localStorage.setItem("user", JSON.stringify(r.data));
-      init({ message: "Успешная регистрация в системе", color: 'success' })
-      push({ name: 'dashboard' })
+      login(r.data)
+      init({ message: 'Вы зарегистрировались в системе', color: 'success' })
+      push('/')
     })
   }
 }

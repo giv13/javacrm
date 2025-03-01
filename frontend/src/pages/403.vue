@@ -11,10 +11,10 @@ import NotFoundImage from '../components/NotFoundImage.vue'
 
     <div class="flex flex-col items-center gap-6 px-4 my-8">
       <NotFoundImage />
-      <h1 class="va-h1 text-center sm:text-5xl text-4xl">404 - Страница не найдена</h1>
+      <h1 class="va-h1 text-center sm:text-5xl text-4xl">403 - Доступ запрещен</h1>
 
       <p class="text-center">
-        Возможно, вы ввели неверный URL страницы, а может она переехала в другой раздел, временно недоступна или удалена.
+        У вас нет доступа к этой странице.
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4">

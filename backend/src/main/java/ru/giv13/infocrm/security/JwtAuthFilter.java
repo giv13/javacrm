@@ -48,18 +48,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (JwtException | UsernameNotFoundException exception) {
-            eraseToken(response);
+            jwtService.eraseCookie();
             handlerExceptionResolver.resolveException(request, response, null, exception);
         } catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
-    }
-
-    private void eraseToken(HttpServletResponse response) {
-        Cookie cookie = new Cookie(tokenName, "");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
     }
 
     private String getToken(HttpServletRequest request) {
