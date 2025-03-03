@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class Role {
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
     @Enumerated(EnumType.STRING)
     @Column(length = 25)
     private ERole name;

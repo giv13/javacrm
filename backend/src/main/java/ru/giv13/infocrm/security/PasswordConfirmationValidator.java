@@ -2,7 +2,7 @@ package ru.giv13.infocrm.security;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ru.giv13.infocrm.user.dto.RegisterRequest;
+import ru.giv13.infocrm.user.RegisterRequest;
 
 public class PasswordConfirmationValidator implements ConstraintValidator<PasswordConfirmation, RegisterRequest> {
     @Override

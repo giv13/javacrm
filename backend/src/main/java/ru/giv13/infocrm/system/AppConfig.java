@@ -1,5 +1,6 @@
 package ru.giv13.infocrm.system;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -16,5 +17,10 @@ public class AppConfig {
                 registry.addMapping("/**").allowedOrigins("http://localhost:5173").allowCredentials(true);
             }
         };
+    }
+
+    @Bean
+    public ModelMapper getMapper() {
+        return new ModelMapper();
     }
 }

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
     @Column(length = 50)
     private String name;
     @Column(unique = true, nullable = false, length = 50)
@@ -32,11 +32,13 @@ public class User implements UserDetails {
     private String email;
     @Column(nullable = false, length = 100)
     private String password;
+    @Column
+    private String notes;
+    @Lob
+    private byte[] avatar;
     @Builder.Default
     @ColumnDefault("true")
     private boolean isActive = true;
-    @Lob
-    private byte[] image;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();

@@ -7,6 +7,10 @@ spring:
     username: infocrm
     password: infocrm
 
+  jackson:
+    mapper:
+      default-view-inclusion: true
+
   jpa:
     hibernate:
       ddl-auto: create-drop

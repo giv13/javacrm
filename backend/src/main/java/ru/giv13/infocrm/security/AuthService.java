@@ -1,6 +1,7 @@
 package ru.giv13.infocrm.security;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,10 +10,9 @@ import ru.giv13.infocrm.user.ERole;
 import ru.giv13.infocrm.user.RoleRepository;
 import ru.giv13.infocrm.user.User;
 import ru.giv13.infocrm.user.UserRepository;
-import ru.giv13.infocrm.user.dto.LoginRequest;
-import ru.giv13.infocrm.user.dto.RegisterRequest;
-import ru.giv13.infocrm.user.dto.UserDto;
-import ru.giv13.infocrm.user.dto.UserToUserDtoConverter;
+import ru.giv13.infocrm.user.LoginRequest;
+import ru.giv13.infocrm.user.RegisterRequest;
+import ru.giv13.infocrm.user.UserDto;
 
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserToUserDtoConverter userToUserDtoConverter;
+    private final ModelMapper modelMapper;
 
     public UserDto register(RegisterRequest request) {
         if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
@@ -39,18 +39,17 @@ public class AuthService {
         User user = userBuilder.build();
         userRepository.save(user);
         jwtService.generateCookie(user);
-        return userToUserDtoConverter.convert(user);
+        return modelMapper.map(user, UserDto.class);
     }
 
     public UserDto login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         User user = userRepository.findByUsernameOrEmail(request.username()).orElseThrow();
         jwtService.generateCookie(user);
-        return userToUserDtoConverter.convert(user);
+        return modelMapper.map(user, UserDto.class);
     }
 
-    public Object logout() {
+    public void logout() {
         jwtService.eraseCookie();
-        return null;
     }
 }

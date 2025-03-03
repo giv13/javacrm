@@ -1,4 +1,4 @@
-package ru.giv13.infocrm.user.dto;
+package ru.giv13.infocrm.user;
 
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Permission {
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
     @Enumerated(EnumType.STRING)
     @Column(length = 25)
     private EPermisson name;
