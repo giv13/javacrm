@@ -1,20 +1,13 @@
 package ru.giv13.infocrm.security;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.giv13.infocrm.user.ERole;
-import ru.giv13.infocrm.user.RoleRepository;
-import ru.giv13.infocrm.user.User;
-import ru.giv13.infocrm.user.UserRepository;
-import ru.giv13.infocrm.user.LoginRequest;
-import ru.giv13.infocrm.user.RegisterRequest;
-import ru.giv13.infocrm.user.UserDto;
+import ru.giv13.infocrm.user.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,29 +17,26 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final ModelMapper modelMapper;
 
-    public UserDto register(RegisterRequest request) {
+    public User register(RegisterRequest request) {
         if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
             throw new UserAlreadyExistsException("Такой пользователь уже существует");
         }
-        User.UserBuilder userBuilder = User
-                .builder()
-                .username(request.username())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()));
-        roleRepository.findByName(ERole.USER).ifPresent(userRole -> userBuilder.roles(Set.of(userRole)));
-        User user = userBuilder.build();
+        User user = (new User())
+                .setUsername(request.username())
+                .setEmail(request.email())
+                .setPassword(passwordEncoder.encode(request.password()));
+        roleRepository.findByName(ERole.USER).ifPresent(userRole -> user.setRoles(List.of(userRole)));
         userRepository.save(user);
         jwtService.generateCookie(user);
-        return modelMapper.map(user, UserDto.class);
+        return user;
     }
 
-    public UserDto login(LoginRequest request) {
+    public User login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         User user = userRepository.findByUsernameOrEmail(request.username()).orElseThrow();
         jwtService.generateCookie(user);
-        return modelMapper.map(user, UserDto.class);
+        return user;
     }
 
     public void logout() {

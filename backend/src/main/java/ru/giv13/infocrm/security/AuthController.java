@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.giv13.infocrm.user.LoginRequest;
 import ru.giv13.infocrm.user.RegisterRequest;
-import ru.giv13.infocrm.user.UserDto;
+import ru.giv13.infocrm.user.User;
 
 @RestController
 @RequestMapping("auth")
@@ -19,14 +19,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("register")
-    @JsonView(UserDto.Profile.class)
-    public UserDto register(@Validated(RegisterRequest.OrderedValidationGroups.class) @RequestBody RegisterRequest request) {
+    @JsonView(User.Profile.class)
+    public User register(@Validated(RegisterRequest.OrderedValidationGroups.class) @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
     @PostMapping("login")
-    @JsonView(UserDto.Profile.class)
-    public UserDto login(@Valid @RequestBody LoginRequest request) {
+    @JsonView(User.Profile.class)
+    public User login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
     }
 

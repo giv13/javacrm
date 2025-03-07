@@ -16,9 +16,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @JsonView(UserDto.Detail.class)
     @PreAuthorize("hasAuthority(T(ru.giv13.infocrm.user.EPermisson).USER_READ)")
-    public List<UserDto> getAll() {
+    @JsonView(User.Default.class)
+    public List<User> getAll() {
         return userService.getAll();
     }
 }

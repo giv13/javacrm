@@ -1,23 +1,21 @@
 package ru.giv13.infocrm.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Entity
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Accessors(chain = true)
 public class Permission {
     @Id
     @GeneratedValue
     private Integer id;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 25)
     private EPermisson name;
+
     @Column(length = 25)
     private String displayName;
 }

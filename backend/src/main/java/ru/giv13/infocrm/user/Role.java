@@ -1,37 +1,41 @@
 package ru.giv13.infocrm.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Accessors(chain = true)
 public class Role {
     @Id
     @GeneratedValue
     private Integer id;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 25)
     private ERole name;
+
     @Column(length = 25)
     private String displayName;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Set<Permission> permissions = new HashSet<>();
+    @JsonIgnore
+    private List<Permission> permissions;
 
-    public Set<SimpleGrantedAuthority> getAuthorities() {
-        Set<SimpleGrantedAuthority> authorities = getPermissions().stream().map(permission -> new SimpleGrantedAuthority(permission.getName().name())).collect(Collectors.toSet());
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + getName().name()));
+        authorities.addAll(permissions.stream().map(permission -> new SimpleGrantedAuthority(permission.getName().name())).toList());
         return authorities;
     }
 }
