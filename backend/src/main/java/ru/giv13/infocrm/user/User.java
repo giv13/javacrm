@@ -50,7 +50,7 @@ public class User implements UserDetails {
     @JsonView(Default.class)
     private boolean isActive = true;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonView(Default.class)
     private List<Role> roles;

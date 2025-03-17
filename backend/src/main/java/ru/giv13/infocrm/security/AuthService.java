@@ -3,8 +3,10 @@ package ru.giv13.infocrm.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.giv13.infocrm.user.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+    @Transactional
     public User register(RegisterRequest request) {
         if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
             throw new UserAlreadyExistsException("Такой пользователь уже существует");
@@ -32,9 +35,10 @@ public class AuthService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public User login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
-        User user = userRepository.findByUsernameOrEmail(request.username()).orElseThrow();
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        User user = (User) authentication.getPrincipal();
         jwtService.generateCookie(user);
         return user;
     }

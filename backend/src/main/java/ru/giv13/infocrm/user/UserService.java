@@ -17,7 +17,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException("Пользователь " + username + " не найден"));
     }
 
+    public List<User> getAll(boolean withRoles) {
+        return withRoles ? userRepository.findAllWithRoles() : userRepository.findAll();
+    }
+
     public List<User> getAll() {
-        return userRepository.findAll();
+        return getAll(false);
     }
 }
