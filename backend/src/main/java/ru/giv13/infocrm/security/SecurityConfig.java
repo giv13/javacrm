@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.giv13.infocrm.project.*;
 import ru.giv13.infocrm.user.*;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public List<User> usersDemo(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository) {
+    public List<User> usersDemo(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, StatusRepository statusRepository, ProjectRepository projectRepository) {
         List<Permission> userPermissions = new ArrayList<>(List.of(
                 (new Permission()).setName(EPermisson.PROJECT_READ).setDisplayName("Проекты:чтение"),
                 (new Permission()).setName(EPermisson.PROJECT_CREATE).setDisplayName("Проекты:создание"),
@@ -70,6 +71,23 @@ public class SecurityConfig {
                 (new User()).setName("Юзер").setUsername("user").setEmail("user@mail.ru").setRoles(List.of(userRole)).setPassword(passwordEncoder().encode("user"))
         );
         userRepository.saveAll(users);
+
+        List<Status> statuses = new ArrayList<>(List.of(
+                (new Status()).setName(EStatus.NEW).setDisplayName("Новый"),
+                (new Status()).setName(EStatus.IN_PROGRESS).setDisplayName("В работе"),
+                (new Status()).setName(EStatus.COMPLETED).setDisplayName("Завершенный"),
+                (new Status()).setName(EStatus.ARCHIVED).setDisplayName("Архивный")
+        ));
+        statusRepository.saveAll(statuses);
+
+        List<Project> projects = new ArrayList<>(List.of(
+                (new Project()).setName("Проект 1").setDescription("Описание проекта 1").setStatus(statuses.get(0)).setOwner(users.get(0)).setTeam(List.of(users.get(0).getId(), users.get(1).getId())),
+                (new Project()).setName("Проект 2").setDescription("Описание проекта 2").setStatus(statuses.get(1)).setOwner(users.get(1)),
+                (new Project()).setName("Проект 3").setDescription("Описание проекта 3").setStatus(statuses.get(2)).setOwner(users.get(1)).setTeam(List.of(users.get(0).getId())),
+                (new Project()).setName("Проект 4").setDescription("Описание проекта 4").setStatus(statuses.get(3)).setOwner(users.get(0))
+        ));
+        projectRepository.saveAll(projects);
+
         return users;
     }
 
