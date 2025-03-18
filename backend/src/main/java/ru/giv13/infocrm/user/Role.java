@@ -29,8 +29,8 @@ public class Role {
     private String displayName;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    @Fetch(value = FetchMode.SUBSELECT)
     @JsonIgnore
     private List<Permission> permissions;
 

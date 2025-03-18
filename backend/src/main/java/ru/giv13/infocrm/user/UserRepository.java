@@ -3,6 +3,8 @@ package ru.giv13.infocrm.user;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
+import ru.giv13.infocrm.project.Project;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByUsernameOrEmail(String username, String email);
 
-    @Query("from User u left join fetch u.roles")
-    List<User> findAllWithRoles();
+    @EntityGraph(attributePaths = "roles")
+    @NonNull
+    List<User> findAll();
 }

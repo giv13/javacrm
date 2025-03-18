@@ -19,6 +19,6 @@ public class UserController {
     @PreAuthorize("hasAuthority(T(ru.giv13.infocrm.user.EPermisson).USER_READ)")
     @JsonView(User.Default.class)
     public List<User> getAll() {
-        return userService.getAll(true);
+        return userService.getAll();
     }
 }

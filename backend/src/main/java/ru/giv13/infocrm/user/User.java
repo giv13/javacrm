@@ -1,11 +1,14 @@
 package ru.giv13.infocrm.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -47,6 +50,7 @@ public class User implements UserDetails {
     private byte[] avatar;
 
     @ColumnDefault("true")
+    @JsonProperty("active")
     @JsonView(Default.class)
     private boolean isActive = true;
 
@@ -54,6 +58,13 @@ public class User implements UserDetails {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonView(Default.class)
     private List<Role> roles;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "project", joinColumns = @JoinColumn(name = "responsible_id"))
+    @Column(name = "id")
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonView(Default.class)
+    private List<Integer> projectIds;
 
     @Override
     @JsonIgnore

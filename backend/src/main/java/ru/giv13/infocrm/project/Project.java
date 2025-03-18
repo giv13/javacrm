@@ -27,17 +27,22 @@ public class Project {
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "responsible_id")
     @JsonIgnore
-    private User owner;
+    private User responsible;
 
-    @Column(name = "owner_id", insertable = false, updatable = false)
-    private Integer ownerId;
+    @Column(name = "responsible_id", insertable = false, updatable = false)
+    private Integer responsibleId;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "project_participant", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "participant_id"))
+    @JsonIgnore
+    private List<User> participants;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(joinColumns = @JoinColumn(name = "project_id"))
-    @Column(name = "user_id")
-    private List<Integer> team;
+    @CollectionTable(name = "project_participant", joinColumns = @JoinColumn(name = "project_id"))
+    @Column(name = "participant_id", insertable = false, updatable = false)
+    private List<Integer> participantIds;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

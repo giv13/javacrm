@@ -81,10 +81,10 @@ public class SecurityConfig {
         statusRepository.saveAll(statuses);
 
         List<Project> projects = new ArrayList<>(List.of(
-                (new Project()).setName("Проект 1").setDescription("Описание проекта 1").setStatus(statuses.get(0)).setOwner(users.get(0)).setTeam(List.of(users.get(0).getId(), users.get(1).getId())),
-                (new Project()).setName("Проект 2").setDescription("Описание проекта 2").setStatus(statuses.get(1)).setOwner(users.get(1)),
-                (new Project()).setName("Проект 3").setDescription("Описание проекта 3").setStatus(statuses.get(2)).setOwner(users.get(1)).setTeam(List.of(users.get(0).getId())),
-                (new Project()).setName("Проект 4").setDescription("Описание проекта 4").setStatus(statuses.get(3)).setOwner(users.get(0))
+                (new Project()).setName("Проект 1").setDescription("Описание проекта 1").setStatus(statuses.get(0)).setResponsible(users.get(0)).setParticipants(List.of(users.get(0), users.get(1))),
+                (new Project()).setName("Проект 2").setDescription("Описание проекта 2").setStatus(statuses.get(1)).setResponsible(users.get(1)),
+                (new Project()).setName("Проект 3").setDescription("Описание проекта 3").setStatus(statuses.get(2)).setResponsible(users.get(1)).setParticipants(List.of(users.get(0))),
+                (new Project()).setName("Проект 4").setDescription("Описание проекта 4").setStatus(statuses.get(3)).setResponsible(users.get(0))
         ));
         projectRepository.saveAll(projects);
 
