@@ -30,7 +30,7 @@ public class User implements UserDetails {
     @JsonView(Default.class)
     private Integer id;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column(unique = true, nullable = false, length = 50)

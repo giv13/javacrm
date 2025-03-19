@@ -23,6 +23,15 @@
       label="Имя пользователя"
       type="text"
     />
+    <VaInput
+      v-model="formData.name"
+      :error="formErrors.name.length > 0"
+      :errorMessages="formErrors.name"
+      @input="formErrors.name = []"
+      class="mb-4"
+      label="Имя"
+      type="text"
+    />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
         ref="password1"
@@ -87,6 +96,7 @@ const { login } = useUserStore()
 const formData = reactive({
   email: '',
   username: '',
+  name: '',
   password: '',
   passwordConfirmation: '',
 })
@@ -94,6 +104,7 @@ const formData = reactive({
 const formErrors = reactive({
   email: [],
   username: [],
+  name: [],
   password: [],
   passwordConfirmation: [],
 });

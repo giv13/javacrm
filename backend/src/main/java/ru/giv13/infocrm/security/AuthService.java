@@ -26,6 +26,7 @@ public class AuthService {
             throw new UserAlreadyExistsException("Такой пользователь уже существует");
         }
         User user = (new User())
+                .setName(request.name())
                 .setUsername(request.username())
                 .setEmail(request.email())
                 .setPassword(passwordEncoder.encode(request.password()));
