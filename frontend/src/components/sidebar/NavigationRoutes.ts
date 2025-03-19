@@ -1,7 +1,7 @@
 export interface INavigationRoute {
   name: string
   displayName: string
-  meta: { icon: string, authorities: Array<string> }
+  meta: { icon: string, permissions: Array<string> }
   children?: INavigationRoute[]
 }
 
@@ -23,7 +23,7 @@ export default {
       displayName: 'menu.users',
       meta: {
         icon: 'group',
-        authorities: ['USER_READ'],
+        permissions: ['USER_READ'],
       },
     },
     {
@@ -31,7 +31,7 @@ export default {
       displayName: 'menu.projects',
       meta: {
         icon: 'folder_shared',
-        authorities: ['PROJECT_READ'],
+        permissions: ['PROJECT_READ'],
       },
     },
     {

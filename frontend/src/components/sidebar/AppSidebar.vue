@@ -2,7 +2,7 @@
   <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
     <VaAccordion v-model="value" multiple>
       <template v-for="(route, index) in navigationRoutes.routes" :key="index">
-        <VaCollapse v-if="!route.meta || !route.meta.authorities || (Array.isArray(route.meta.authorities) && route.meta.authorities.some(r => user.authorities.includes(r)))">
+        <VaCollapse v-if="!route.meta || !route.meta.permissions || (Array.isArray(route.meta.permissions) && route.meta.permissions.some(r => user.permissions.includes(r)))">
           <template #header="{ value: isCollapsed }">
             <VaSidebarItem
               :to="route.children ? undefined : { name: route.name }"
@@ -30,7 +30,7 @@
           </template>
           <template #body>
             <template v-for="(childRoute, index2) in route.children" :key="index2">
-              <div v-if="!childRoute.meta || !childRoute.meta.authorities || (Array.isArray(childRoute.meta.authorities) && childRoute.meta.authorities.some(r => user.authorities.includes(r)))">
+              <div v-if="!childRoute.meta || !childRoute.meta.permissions || (Array.isArray(childRoute.meta.permissions) && childRoute.meta.permissions.some(r => user.permissions.includes(r)))">
                 <VaSidebarItem
                   :to="{ name: childRoute.name }"
                   :active="isActiveChildRoute(childRoute)"

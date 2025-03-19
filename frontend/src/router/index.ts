@@ -26,13 +26,13 @@ const routes: Array<RouteRecordRaw> = [
         name: 'users',
         path: 'users',
         component: () => import('../pages/users/UsersPage.vue'),
-        meta: { authorities: ['USER_READ'] },
+        meta: { permissions: ['USER_READ'] },
       },
       {
         name: 'projects',
         path: 'projects',
         component: () => import('../pages/projects/ProjectsPage.vue'),
-        meta: { authorities: ['PROJECT_READ'] },
+        meta: { permissions: ['PROJECT_READ'] },
       },
     ],
   },
@@ -93,7 +93,7 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
   if (to.meta.requiresAuth && !userStore.auth) {
     next({ name: 'login', query: { redirect: to.fullPath } })
-  } else if (Array.isArray(to.meta.authorities) && to.meta.authorities.length && !to.meta.authorities.some(r => userStore.user.authorities.includes(r))) {
+  } else if (Array.isArray(to.meta.permissions) && to.meta.permissions.length && !to.meta.permissions.some(r => userStore.user.permissions.includes(r))) {
     to.meta.forbidden = true
     next()
   } else if (to.matched.some(r => r.name === 'auth') && userStore.auth) {
