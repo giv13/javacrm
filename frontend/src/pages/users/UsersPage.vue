@@ -46,7 +46,7 @@ const onUserSaved = async (user: User) => {
     await usersApi.update(user)
     if (!error.value) {
       notify({
-        message: `${user.fullname} has been updated`,
+        message: `Пользователь ${user.username} обновлен`,
         color: 'success',
       })
     }
@@ -55,7 +55,7 @@ const onUserSaved = async (user: User) => {
 
     if (!error.value) {
       notify({
-        message: `${user.fullname} has been created`,
+        message: `Пользователь ${user.username} добавлен`,
         color: 'success',
       })
     }
@@ -65,7 +65,7 @@ const onUserSaved = async (user: User) => {
 const onUserDelete = async (user: User) => {
   await usersApi.remove(user)
   notify({
-    message: `${user.fullname} has been deleted`,
+    message: `Пользователь ${user.username} удален`,
     color: 'success',
   })
 }
@@ -78,7 +78,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
   if (editFormRef.value.isFormHasUnsavedChanges) {
     const agreed = await confirm({
       maxWidth: '380px',
-      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      message: 'Форма содержит несохраненные изменения. Вы уверены, что хотите ее закрыть?',
       size: 'small',
     })
     if (agreed) {
@@ -91,7 +91,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
 </script>
 
 <template>
-  <h1 class="page-title">Users</h1>
+  <h1 class="page-title">Пользователи</h1>
 
   <VaCard>
     <VaCardContent>
@@ -102,17 +102,17 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             color="background-element"
             border-color="background-element"
             :options="[
-              { label: 'Active', value: true },
-              { label: 'Inactive', value: false },
+              { label: 'Активные', value: true },
+              { label: 'Неактивные', value: false },
             ]"
           />
-          <VaInput v-model="filters.search" placeholder="Search">
+          <VaInput v-model="filters.search" placeholder="Поиск">
             <template #prependInner>
               <VaIcon name="search" color="secondary" size="small" />
             </template>
           </VaInput>
         </div>
-        <VaButton @click="showAddUserModal">Add User</VaButton>
+        <VaButton @click="showAddUserModal">Добавить пользователя</VaButton>
       </div>
 
       <UsersTable
@@ -137,11 +137,11 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
     hide-default-actions
     :before-cancel="beforeEditFormModalClose"
   >
-    <h1 class="va-h5">{{ userToEdit ? 'Edit user' : 'Add user' }}</h1>
+    <h1 class="va-h5">{{ userToEdit ? 'Обновить' : 'Добавить' }} пользователя</h1>
     <EditUserForm
       ref="editFormRef"
       :user="userToEdit"
-      :save-button-label="userToEdit ? 'Save' : 'Add'"
+      :save-button-label="userToEdit ? 'Сохранить' : 'Добавить'"
       @close="cancel"
       @save="
         (user) => {

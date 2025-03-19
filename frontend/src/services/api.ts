@@ -8,14 +8,18 @@ export const api = {
   login: () => `${apiBaseUrl}/auth/login`,
   logout: () => `${apiBaseUrl}/auth/logout`,
   allUsers: () => `${apiBaseUrl}/users`,
-  user: (id: string) => `${apiBaseUrl}/users/${id}`,
+  user: (id: number) => `${apiBaseUrl}/users/${id}`,
   users: ({ page, pageSize }: { page: number; pageSize: number }) =>
     `${apiBaseUrl}/users/?page=${page}&pageSize=${pageSize}`,
   allProjects: () => `${apiBaseUrl}/projects`,
-  project: (id: string) => `${apiBaseUrl}/projects/${id}`,
+  project: (id: number) => `${apiBaseUrl}/projects/${id}`,
   projects: ({ page, pageSize }: { page: number; pageSize: number }) =>
     `${apiBaseUrl}/projects/?page=${page}&pageSize=${pageSize}`,
   avatars: () => `${apiBaseUrl}/avatars`,
+}
+
+export const get = (url: string) => {
+  return request(url, 'GET')
 }
 
 export const post = (url: string, data = {}, errors = {}) => {
@@ -23,22 +27,26 @@ export const post = (url: string, data = {}, errors = {}) => {
 }
 
 const request = async (url: string, method = 'GET', data = {}, errors: Record<string, string[]> = {}) => {
-  return await fetch(url, {
+  const options: RequestInit = {
     method,
     credentials: 'include',
-    body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
-    },
-  }).then(r => r.json())
+    }
+  }
+  if (Object.keys(data).length > 0) {
+    options.body = JSON.stringify(data)
+  }
+  return await fetch(url, options)
+    .then(r => r.json())
     .then(r => {
       if (!r.success) throw r
-      return r
+      return r.data
     })
     .catch(r => {
       if (typeof r.error === 'string') {
         init({ message: r.error, color: 'danger' })
-      } else {
+      } else if (typeof r.error === 'object') {
         for (const [field, message] of Object.entries(r.error)) {
           if (field in errors && typeof message === 'string') {
             errors[field] = message.split("|")

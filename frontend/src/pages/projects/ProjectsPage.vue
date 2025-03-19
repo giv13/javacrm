@@ -38,16 +38,16 @@ const { init: notify } = useToast()
 
 const onProjectSaved = async (project: Project) => {
   doShowProjectFormModal.value = false
-  if ('id' in project) {
+  if (projectToEdit.value) {
     await update(project as Project)
     notify({
-      message: 'Project updated',
+      message: `Проект ${project.name} обновлен`,
       color: 'success',
     })
   } else {
     await add(project as Project)
     notify({
-      message: 'Project created',
+      message: `Проект ${project.name} добавлен`,
       color: 'success',
     })
   }
@@ -57,9 +57,9 @@ const { confirm } = useModal()
 
 const onProjectDeleted = async (project: Project) => {
   const response = await confirm({
-    title: 'Delete project',
-    message: `Are you sure you want to delete project "${project.project_name}"?`,
-    okText: 'Delete',
+    title: 'Удалить проект',
+    message: `Вы уверены, что хотите удалить проект "${project.name}"?`,
+    okText: 'Удалить',
     size: 'small',
     maxWidth: '380px',
   })
@@ -70,7 +70,7 @@ const onProjectDeleted = async (project: Project) => {
 
   await remove(project)
   notify({
-    message: 'Project deleted',
+    message: 'Проект удален',
     color: 'success',
   })
 }
@@ -81,7 +81,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
   if (editFormRef.value.isFormHasUnsavedChanges) {
     const agreed = await confirm({
       maxWidth: '380px',
-      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      message: 'Форма содержит несохраненные изменения. Вы уверены, что хотите ее закрыть?',
       size: 'small',
     })
     if (agreed) {
@@ -94,7 +94,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
 </script>
 
 <template>
-  <h1 class="page-title">Projects</h1>
+  <h1 class="page-title">Проекты</h1>
 
   <VaCard>
     <VaCardContent>
@@ -105,12 +105,12 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             color="background-element"
             border-color="background-element"
             :options="[
-              { label: 'Cards', value: true },
-              { label: 'Table', value: false },
+              { label: 'Карточки', value: true },
+              { label: 'Таблица', value: false },
             ]"
           />
         </div>
-        <VaButton icon="add" @click="createNewProject">Project</VaButton>
+        <VaButton icon="add" @click="createNewProject">Добавить проект</VaButton>
       </div>
 
       <ProjectCards
@@ -142,12 +142,11 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       hide-default-actions
       :before-cancel="beforeEditFormModalClose"
     >
-      <h1 v-if="projectToEdit === null" class="va-h5 mb-4">Add project</h1>
-      <h1 v-else class="va-h5 mb-4">Edit project</h1>
+      <h1 class="va-h5 mb-4">{{ projectToEdit ? 'Обновить' : 'Добавить' }} проект</h1>
       <EditProjectForm
         ref="editFormRef"
         :project="projectToEdit"
-        :save-button-label="projectToEdit === null ? 'Add' : 'Save'"
+        :save-button-label="projectToEdit ? 'Сохранить' : 'Добавить'"
         @close="cancel"
         @save="
           (project) => {

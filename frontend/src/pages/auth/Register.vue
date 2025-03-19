@@ -112,7 +112,7 @@ const formErrors = reactive({
 const submit = () => {
   if (validate()) {
     return post(api.register(), formData, formErrors).then(r => {
-      login(r.data)
+      login(r)
       init({ message: 'Вы зарегистрировались в системе', color: 'success' })
       push('/')
     })

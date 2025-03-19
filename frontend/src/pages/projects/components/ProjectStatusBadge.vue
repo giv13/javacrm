@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { PropType } from 'vue'
-import { Project } from '../types'
+import { Status } from '../types'
 
 defineProps({
   status: {
-    type: String as PropType<Project['status']>,
+    type: Object as PropType<Status>,
     required: true,
   },
 })
 
-const badgeColorMap: Record<Project['status'], string> = {
-  'in progress': 'primary',
-  archived: 'secondary',
-  completed: 'success',
-  important: 'warning',
+const badgeColorMap: Record<Status['name'], string> = {
+  'NEW': 'secondary',
+  'IN_PROGRESS': 'primary',
+  'COMPLETED': 'success',
+  'ARCHIVED': 'warning',
 }
 </script>
 
 <template>
-  <VaBadge square :color="badgeColorMap[$props.status]" :text="$props.status.toUpperCase()" />
+  <VaBadge square :color="badgeColorMap[$props.status.name]" :text="$props.status.displayName" />
 </template>

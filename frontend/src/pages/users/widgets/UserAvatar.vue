@@ -24,22 +24,13 @@ const isUrl = (avatar: string) => {
 
   return avatar.startsWith('http') || avatar.startsWith('blob:')
 }
-
-const fallback = (fullname: string) => {
-  try {
-    const [firstName, lastName] = fullname.split(' ')
-    return `${firstName[0]}${lastName[0]}`
-  } catch {
-    return fullname[0]
-  }
-}
 </script>
 
 <template>
   <VaAvatar
     :size="size"
     :src="isUrl(user.avatar) ? user.avatar : ''"
-    :fallback-text="fallback(user.fullname)"
-    :color="avatarColor(user.fullname)"
+    :fallback-text="user.name[0]"
+    :color="avatarColor(user.name)"
   />
 </template>

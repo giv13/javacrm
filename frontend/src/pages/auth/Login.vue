@@ -67,7 +67,7 @@ const formErrors = reactive({
 const submit = () => {
   if (validate()) {
     return post(api.login(), formData, formErrors).then(r => {
-      login(r.data)
+      login(r)
       init({ message: 'Вы вошли в систему', color: 'success' })
       const redirectPath = Array.isArray(query.redirect) ? query.redirect[0] : query.redirect;
       push(redirectPath || '/')

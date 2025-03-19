@@ -4,7 +4,7 @@ import { Project } from '../types'
 export function useProjectUsers() {
   const { users } = useUsers()
 
-  const getUserById = (userId: string) => {
+  const getUserById = (userId: number) => {
     return users.value.find(({ id }) => userId === id)
   }
 
@@ -14,17 +14,17 @@ export function useProjectUsers() {
     return colors[index]
   }
 
-  const getTeamOptions = (team: Project['team']) => {
+  const getTeamOptions = (team: Project['participantIds']) => {
     return team.reduce(
       (acc, userId) => {
         const user = getUserById(userId)
 
         if (user) {
           acc.push({
-            label: user.fullname,
+            label: user.name,
             src: user.avatar,
-            fallbackText: user.fullname[0],
-            color: avatarColor(user.fullname),
+            fallbackText: user.name[0],
+            color: avatarColor(user.name),
           })
         }
 

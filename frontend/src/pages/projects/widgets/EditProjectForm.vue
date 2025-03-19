@@ -17,17 +17,18 @@ defineEmits<{
 }>()
 
 const defaultNewProject: EmptyProject = {
-  project_name: '',
-  project_owner: undefined,
-  team: [],
+  name: '',
+  description: '',
   status: undefined,
+  responsibleId: undefined,
+  participantIds: [],
 }
 
 const newProject = ref({ ...defaultNewProject })
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newProject.value).some((key) => {
-    if (key === 'team') {
+    if (key === 'participantIds') {
       return false
     }
 
@@ -52,13 +53,13 @@ watch(
 
     newProject.value = {
       ...props.project,
-      project_owner: props.project.project_owner,
+      responsibleId: props.project.responsibleId,
     }
   },
   { immediate: true },
 )
 
-const required = (v: string | SelectOption) => !!v || 'This field is required'
+const required = (v: string | SelectOption) => !!v || 'Это поле обязательно для заполнения'
 
 const ownerFiltersSearch = ref('')
 const teamFiltersSearch = ref('')
@@ -66,13 +67,13 @@ const teamFiltersSearch = ref('')
 
 <template>
   <VaForm v-slot="{ validate }" class="flex flex-col gap-2">
-    <VaInput v-model="newProject.project_name" label="Project name" :rules="[required]" />
+    <VaInput v-model="newProject.name" label="Наименование" :rules="[required]" />
     <VaSelect
-      v-model="newProject.project_owner"
+      v-model="newProject.responsibleId"
       v-model:search="ownerFiltersSearch"
       searchable
-      label="Owner"
-      text-by="fullname"
+      label="Ответственный"
+      text-by="name"
       track-by="id"
       value-by="id"
       :rules="[required]"
@@ -81,19 +82,19 @@ const teamFiltersSearch = ref('')
       <template #content="{ value: user }">
         <div v-if="user" :key="user.id" class="flex items-center gap-1 mr-4">
           <UserAvatar v-if="false" :user="user" size="18px" />
-          {{ user.fullname }}
+          {{ user.name }}
         </div>
       </template>
     </VaSelect>
     <VaSelect
-      v-model="newProject.team"
+      v-model="newProject.participantIds"
       v-model:search="teamFiltersSearch"
       label="Team"
-      text-by="fullname"
+      text-by="name"
       track-by="id"
       value-by="id"
       multiple
-      :rules="[(v: any) => ('length' in v && v.length > 0) || 'This field is required']"
+      :rules="[(v: any) => ('length' in v && v.length > 0) || 'Это поле обязательно для заполнения']"
       :options="usersStore.items"
       :max-visible-options="$vaBreakpoint.mdUp ? 3 : 1"
     >
@@ -101,7 +102,7 @@ const teamFiltersSearch = ref('')
         <template v-if="valueArray?.length">
           <div v-for="(user, index) in valueArray" :key="user.id" class="flex items-center gap-1 mr-2">
             <UserAvatar v-if="user" :user="user" size="18px" />
-            {{ user.fullname }}{{ index < valueArray.length - 1 ? ',' : '' }}
+            {{ user.name }}{{ index < valueArray.length - 1 ? ',' : '' }}
           </div>
         </template>
       </template>
@@ -124,7 +125,7 @@ const teamFiltersSearch = ref('')
       </template>
     </VaSelect>
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
-      <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
+      <VaButton preset="secondary" color="secondary" @click="$emit('close')">Отмена</VaButton>
       <VaButton @click="validate() && $emit('save', newProject as Project)">{{ saveButtonLabel }}</VaButton>
     </div>
   </VaForm>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineVaDataTableColumns, useModal } from 'vuestic-ui'
-import { User, UserRole } from '../types'
+import { User, Role } from '../types'
 import UserAvatar from './UserAvatar.vue'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/pages/users'
@@ -8,11 +8,11 @@ import { useVModel } from '@vueuse/core'
 import { Project } from '../../projects/types'
 
 const columns = defineVaDataTableColumns([
-  { label: 'Full Name', key: 'fullname', sortable: true },
-  { label: 'Email', key: 'email', sortable: true },
-  { label: 'Username', key: 'username', sortable: true },
-  { label: 'Role', key: 'role', sortable: true },
-  { label: 'Projects', key: 'projects', sortable: true },
+  { label: 'Имя', key: 'name', sortable: true },
+  { label: 'Имя пользователя', key: 'username', sortable: true },
+  { label: 'E-mail', key: 'email', sortable: true },
+  { label: 'Роли', key: 'roles', sortable: true },
+  { label: 'Проекты', key: 'projectIds', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -42,10 +42,9 @@ const users = toRef(props, 'users')
 const sortByVModel = useVModel(props, 'sortBy', emit)
 const sortingOrderVModel = useVModel(props, 'sortingOrder', emit)
 
-const roleColors: Record<UserRole, string> = {
-  admin: 'danger',
-  user: 'background-element',
-  owner: 'warning',
+const roleColors: Record<Role['name'], string> = {
+  'ADMIN': 'danger',
+  'USER': 'background-element',
 }
 
 const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage))
@@ -54,10 +53,10 @@ const { confirm } = useModal()
 
 const onUserDelete = async (user: User) => {
   const agreed = await confirm({
-    title: 'Delete user',
-    message: `Are you sure you want to delete ${user.fullname}?`,
-    okText: 'Delete',
-    cancelText: 'Cancel',
+    title: 'Удалить пользователя',
+    message: `Вы уверены, что хотите удалить пользователя ${user.name}?`,
+    okText: 'Удалить',
+    cancelText: 'Отмена',
     size: 'small',
     maxWidth: '380px',
   })
@@ -72,12 +71,12 @@ const formatProjectNames = (projects: Project['id'][]) => {
     const project = props.projects?.find(({ id }) => p === id)
 
     if (project) {
-      acc.push(project.project_name)
+      acc.push(project.name)
     }
 
     return acc
   }, [] as string[])
-  if (names.length === 0) return 'No projects'
+  if (names.length === 0) return 'Нет проектов'
   if (names.length <= 2) {
     return names.map((name) => name).join(', ')
   }
@@ -87,9 +86,8 @@ const formatProjectNames = (projects: Project['id'][]) => {
       .slice(0, 2)
       .map((name) => name)
       .join(', ') +
-    ' + ' +
-    (names.length - 2) +
-    ' more'
+    ' и ещё +' +
+    (names.length - 2)
   )
 }
 </script>
@@ -102,10 +100,10 @@ const formatProjectNames = (projects: Project['id'][]) => {
     :items="users"
     :loading="$props.loading"
   >
-    <template #cell(fullname)="{ rowData }">
+    <template #cell(name)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">
         <UserAvatar :user="rowData as User" size="small" />
-        {{ rowData.fullname }}
+        {{ rowData.name }}
       </div>
     </template>
 
@@ -121,13 +119,15 @@ const formatProjectNames = (projects: Project['id'][]) => {
       </div>
     </template>
 
-    <template #cell(role)="{ rowData }">
-      <VaBadge :text="rowData.role" :color="roleColors[rowData.role as UserRole]" />
+    <template #cell(roles)="{ rowData }">
+      <template v-for="(role, index) in rowData.roles">
+        <VaBadge :text="role.displayName" :color="roleColors[role.name]" :class="{ 'ml-2': index }" />
+      </template>
     </template>
 
-    <template #cell(projects)="{ rowData }">
+    <template #cell(projectIds)="{ rowData }">
       <div class="ellipsis max-w-[300px] lg:max-w-[450px]">
-        {{ formatProjectNames(rowData.projects) }}
+        {{ formatProjectNames(rowData.projectIds) }}
       </div>
     </template>
 
@@ -137,7 +137,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
           preset="primary"
           size="small"
           icon="mso-edit"
-          aria-label="Edit user"
+          aria-label="Редактировать пользователя"
           @click="$emit('edit-user', rowData as User)"
         />
         <VaButton
@@ -145,7 +145,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
           size="small"
           icon="mso-delete"
           color="danger"
-          aria-label="Delete user"
+          aria-label="Удалить пользователя"
           @click="onUserDelete(rowData as User)"
         />
       </div>
@@ -154,8 +154,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
 
   <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
     <div>
-      <b>{{ $props.pagination.total }} results.</b>
-      Results per page
+      <b>Всего результатов: {{ $props.pagination.total }}</b>. Результатов на странице:
       <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
     </div>
 
@@ -163,7 +162,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
       <VaButton
         preset="secondary"
         icon="va-arrow-left"
-        aria-label="Previous page"
+        aria-label="Предыдущая страница"
         :disabled="$props.pagination.page === 1"
         @click="$props.pagination.page--"
       />
@@ -171,7 +170,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
         class="mr-2"
         preset="secondary"
         icon="va-arrow-right"
-        aria-label="Next page"
+        aria-label="Следующая страница"
         :disabled="$props.pagination.page === totalPages"
         @click="$props.pagination.page++"
       />

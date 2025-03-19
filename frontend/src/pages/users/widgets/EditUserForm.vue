@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PropType, computed, ref, watch } from 'vue'
 import { useForm } from 'vuestic-ui'
-import { User, UserRole } from '../types'
+import { User, Role } from '../types'
 import UserAvatar from './UserAvatar.vue'
 import { useProjects } from '../../projects/composables/useProjects'
 import { validators } from '../../../services/utils'
@@ -18,21 +18,21 @@ const props = defineProps({
 })
 
 const defaultNewUser: Omit<User, 'id'> = {
-  avatar: '',
-  fullname: '',
-  role: 'user',
+  name: '',
   username: '',
-  notes: '',
   email: '',
+  notes: '',
+  avatar: '',
   active: true,
-  projects: [],
+  roles: [],
+  projectIds: [],
 }
 
 const newUser = ref<User>({ ...defaultNewUser } as User)
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
-    if (key === 'avatar' || key === 'projects') {
+    if (key === 'avatar' || key === 'projectIds') {
       return false
     }
 
@@ -57,7 +57,7 @@ watch(
 
     newUser.value = {
       ...props.user,
-      projects: props.user.projects.filter((projectId) => projects.value.find(({ id }) => id === projectId)),
+      projectIds: props.user.projectIds.filter((projectId) => projects.value.find(({ id }) => id === projectId)),
       avatar: props.user.avatar || '',
     }
   },
@@ -84,10 +84,9 @@ const onSave = () => {
   }
 }
 
-const roleSelectOptions: { text: Capitalize<Lowercase<UserRole>>; value: UserRole }[] = [
+const roleSelectOptions: { text: Capitalize<Lowercase<Role['displayName']>>; value: Role['name'] }[] = [
   { text: 'Admin', value: 'admin' },
   { text: 'User', value: 'user' },
-  { text: 'Owner', value: 'owner' },
 ]
 </script>
 
@@ -100,7 +99,7 @@ const roleSelectOptions: { text: Capitalize<Lowercase<UserRole>>; value: UserRol
       class="self-stretch justify-start items-center gap-4 inline-flex"
     >
       <UserAvatar :user="newUser" size="large" />
-      <VaButton preset="primary" size="small">Add image</VaButton>
+      <VaButton preset="primary" size="small">Добавить изображение</VaButton>
       <VaButton
         v-if="avatar"
         preset="primary"
@@ -114,15 +113,15 @@ const roleSelectOptions: { text: Capitalize<Lowercase<UserRole>>; value: UserRol
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
-          v-model="newUser.fullname"
-          label="Full name"
+          v-model="newUser.name"
+          label="Имя"
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
-          name="fullName"
+          name="name"
         />
         <VaInput
           v-model="newUser.username"
-          label="Username"
+          label="Имя пользователя"
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
           name="username"
@@ -131,18 +130,18 @@ const roleSelectOptions: { text: Capitalize<Lowercase<UserRole>>; value: UserRol
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
           v-model="newUser.email"
-          label="Email"
+          label="E-mail"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.email]"
           name="email"
         />
         <VaSelect
-          v-model="newUser.projects"
-          label="Projects"
+          v-model="newUser.projectIds"
+          label="Проекты"
           class="w-full sm:w-1/2"
           :options="projects"
           value-by="id"
-          text-by="project_name"
+          text-by="name"
           :rules="[validators.required]"
           name="projects"
           multiple
@@ -153,8 +152,8 @@ const roleSelectOptions: { text: Capitalize<Lowercase<UserRole>>; value: UserRol
       <div class="flex gap-4 w-full">
         <div class="w-1/2">
           <VaSelect
-            v-model="newUser.role"
-            label="Role"
+            v-model="newUser.roles"
+            label="Роли"
             class="w-full"
             :options="roleSelectOptions"
             :rules="[validators.required]"
@@ -164,13 +163,13 @@ const roleSelectOptions: { text: Capitalize<Lowercase<UserRole>>; value: UserRol
         </div>
 
         <div class="flex items-center w-1/2 mt-4">
-          <VaCheckbox v-model="newUser.active" label="Active" class="w-full" name="active" />
+          <VaCheckbox v-model="newUser.active" label="Активный" class="w-full" name="active" />
         </div>
       </div>
 
       <VaTextarea v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
-        <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
+        <VaButton preset="secondary" color="secondary" @click="$emit('close')">Отмена</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
       </div>
     </div>

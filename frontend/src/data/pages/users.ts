@@ -1,5 +1,5 @@
 import { User } from '../../pages/users/types'
-import { api } from '../../services/api'
+import { api, get } from '../../services/api'
 
 export type Pagination = {
   page: number
@@ -19,12 +19,12 @@ export type Filters = {
 
 export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>) => {
   const { isActive, search } = filters
-  let filteredUsers: User[] = await fetch(api.allUsers()).then((r) => r.json())
+  let filteredUsers: User[] = await get(api.allUsers());
 
   filteredUsers = filteredUsers.filter((user) => user.active === isActive)
 
   if (search) {
-    filteredUsers = filteredUsers.filter((user) => user.fullname.toLowerCase().includes(search.toLowerCase()))
+    filteredUsers = filteredUsers.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()) || user.username.toLowerCase().includes(search.toLowerCase()))
   }
 
   const { page = 1, perPage = 10 } = filters || {}

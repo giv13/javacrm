@@ -8,11 +8,11 @@ import { Pagination, Sorting } from '../../../data/pages/projects'
 import { useVModel } from '@vueuse/core'
 
 const columns = defineVaDataTableColumns([
-  { label: 'Project name', key: 'project_name', sortable: true },
-  { label: 'Project owner', key: 'project_owner', sortable: true },
-  { label: 'Team', key: 'team', sortable: true },
-  { label: 'Status', key: 'status', sortable: true },
-  { label: 'Creation Date', key: 'created_at', sortable: true },
+  { label: 'Наименование', key: 'name', sortable: true },
+  { label: 'Ответственный', key: 'responsibleId', sortable: true },
+  { label: 'Участники', key: 'participantIds', sortable: true },
+  { label: 'Статус', key: 'status', sortable: true },
+  { label: 'Дата создания', key: 'createdAt', sortable: true },
   { label: ' ', key: 'actions' },
 ])
 
@@ -60,26 +60,26 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
       :columns="columns"
       :loading="loading"
     >
-      <template #cell(project_name)="{ rowData }">
+      <template #cell(name)="{ rowData }">
         <div class="ellipsis max-w-[230px] lg:max-w-[450px]">
-          {{ rowData.project_name }}
+          {{ rowData.name }}
         </div>
       </template>
-      <template #cell(project_owner)="{ rowData }">
-        <div v-if="getUserById(rowData.project_owner)" class="flex items-center gap-2 ellipsis max-w-[230px]">
-          <UserAvatar :user="getUserById(rowData.project_owner)" size="small" />
-          {{ getUserById(rowData.project_owner).fullname }}
+      <template #cell(responsibleId)="{ rowData }">
+        <div v-if="getUserById(rowData.responsibleId)" class="flex items-center gap-2 ellipsis max-w-[230px]">
+          <UserAvatar :user="getUserById(rowData.responsibleId)" size="small" />
+          {{ getUserById(rowData.responsibleId).name }}
         </div>
       </template>
-      <template #cell(team)="{ rowData: project }">
-        <VaAvatarGroup size="small" :options="getTeamOptions(project.team)" :max="5" />
+      <template #cell(participantIds)="{ rowData: project }">
+        <VaAvatarGroup size="small" :options="getTeamOptions(project.participantIds)" :max="5" />
       </template>
       <template #cell(status)="{ rowData: project }">
         <ProjectStatusBadge :status="project.status" />
       </template>
 
-      <template #cell(created_at)="{ rowData: project }">
-        {{ new Date(project.created_at).toLocaleDateString() }}
+      <template #cell(createdAt)="{ rowData: project }">
+        {{ new Date(project.createdAt).toLocaleDateString() }}
       </template>
 
       <template #cell(actions)="{ rowData: project }">
@@ -89,7 +89,7 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
             size="small"
             color="primary"
             icon="mso-edit"
-            aria-label="Edit project"
+            aria-label="Редактировать проект"
             @click="$emit('edit', project as Project)"
           />
           <VaButton
@@ -97,7 +97,7 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
             size="small"
             icon="mso-delete"
             color="danger"
-            aria-label="Delete project"
+            aria-label="Удалить проект"
             @click="$emit('delete', project as Project)"
           />
         </div>
@@ -105,8 +105,7 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
     </VaDataTable>
     <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
       <div>
-        <b>{{ $props.pagination.total }} results.</b>
-        Results per page
+        <b>Всего результатов: {{ $props.pagination.total }}</b>. Результатов на странице:
         <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
       </div>
 
@@ -114,7 +113,7 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
         <VaButton
           preset="secondary"
           icon="va-arrow-left"
-          aria-label="Previous page"
+          aria-label="Предыдущая страница"
           :disabled="$props.pagination.page === 1"
           @click="$props.pagination.page--"
         />
@@ -122,7 +121,7 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
           class="mr-2"
           preset="secondary"
           icon="va-arrow-right"
-          aria-label="Next page"
+          aria-label="Следующая страница"
           :disabled="$props.pagination.page === totalPages"
           @click="$props.pagination.page++"
         />

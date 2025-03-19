@@ -38,6 +38,7 @@ export default defineVuesticConfig({
     },
     VaDataTable: {
       disableClientSideSorting: true,
+      noDataHtml: 'Нет результатов'
     },
     presets: {
       VaSelect: {

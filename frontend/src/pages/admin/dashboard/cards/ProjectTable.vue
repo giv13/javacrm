@@ -8,9 +8,10 @@ import { ref } from 'vue'
 import { useProjectUsers } from '../../../projects/composables/useProjectUsers'
 
 const columns = defineVaDataTableColumns([
-  { label: 'Name', key: 'project_name', sortable: true },
-  { label: 'Status', key: 'status', sortable: true },
-  { label: 'Team', key: 'team', sortable: true },
+  { label: 'Наименование', key: 'name', sortable: true },
+  { label: 'Статус', key: 'status', sortable: true },
+  { label: 'Ответственный', key: 'responsibleId', sortable: true },
+  { label: 'Участники', key: 'participantIds', sortable: true },
 ])
 
 const pagination = ref<Pagination>({ page: 1, perPage: 5, total: 0 })
@@ -24,8 +25,8 @@ const { getTeamOptions, getUserById } = useProjectUsers()
 <template>
   <VaCard>
     <VaCardTitle class="flex items-start justify-between">
-      <h1 class="card-title text-secondary font-bold uppercase">Projects</h1>
-      <VaButton preset="primary" size="small" to="/projects">View all projects</VaButton>
+      <h1 class="card-title text-secondary font-bold uppercase">Проекты</h1>
+      <VaButton preset="primary" size="small" to="/projects">Смотреть все проекты</VaButton>
     </VaCardTitle>
     <VaCardContent>
       <div v-if="projects.length > 0">
@@ -36,30 +37,30 @@ const { getTeamOptions, getUserById } = useProjectUsers()
           :columns="columns"
           :loading="isLoading"
         >
-          <template #cell(project_name)="{ rowData }">
+          <template #cell(name)="{ rowData }">
             <div class="ellipsis max-w-[230px] lg:max-w-[450px]">
-              {{ rowData.project_name }}
+              {{ rowData.name }}
             </div>
           </template>
-          <template #cell(project_owner)="{ rowData }">
+          <template #cell(status)="{ rowData }">
+            <ProjectStatusBadge :status="rowData.status" />
+          </template>
+          <template #cell(responsibleId)="{ rowData }">
             <div class="flex items-center gap-2 ellipsis max-w-[230px]">
               <UserAvatar
-                v-if="getUserById(rowData.project_owner)"
-                :user="getUserById(rowData.project_owner)!"
+                v-if="getUserById(rowData.responsibleId)"
+                :user="getUserById(rowData.responsibleId)!"
                 size="small"
               />
-              {{ getUserById(rowData.project_owner)?.fullname }}
+              {{ getUserById(rowData.responsibleId)?.name }}
             </div>
           </template>
-          <template #cell(team)="{ rowData: project }">
-            <VaAvatarGroup size="small" :options="getTeamOptions(project.team)" :max="2" />
-          </template>
-          <template #cell(status)="{ rowData: project }">
-            <ProjectStatusBadge :status="project.status" />
+          <template #cell(participantIds)="{ rowData }">
+            <VaAvatarGroup size="small" :options="getTeamOptions(rowData.participantIds)" :max="2" />
           </template>
         </VaDataTable>
       </div>
-      <div v-else class="p-4 flex justify-center items-center text-[var(--va-secondary)]">No projects</div>
+      <div v-else class="p-4 flex justify-center items-center text-[var(--va-secondary)]">Нет проектов</div>
     </VaCardContent>
   </VaCard>
 </template>

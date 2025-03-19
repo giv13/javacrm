@@ -5,7 +5,7 @@ import { useProjectsStore } from '../../../stores/projects'
 import { useProjectUsers } from './useProjectUsers'
 
 const makePaginationRef = () => ref<Pagination>({ page: 1, perPage: 10, total: 0 })
-const makeSortingRef = () => ref<Sorting>({ sortBy: 'created_at', sortingOrder: 'desc' })
+const makeSortingRef = () => ref<Sorting>({ sortBy: 'createdAt', sortingOrder: 'desc' })
 
 export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref<Pagination> }) => {
   const isLoading = ref(false)
@@ -32,15 +32,15 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
     )
 
     const getSortItem = (obj: any, sortBy: Sorting['sortBy']) => {
-      if (sortBy === 'project_owner') {
-        return getUserById(obj.project_owner)?.fullname
+      if (sortBy === 'responsibleId') {
+        return getUserById(obj.responsibleId)?.name
       }
 
-      if (sortBy === 'team') {
-        return obj.team.map((user: any) => getUserById(user)?.fullname || '').join(', ')
+      if (sortBy === 'participantIds') {
+        return obj.participantIds.map((user: any) => getUserById(user)?.name || '').join(', ')
       }
 
-      if (sortBy === 'created_at') {
+      if (sortBy === 'createdAt') {
         return new Date(obj[sortBy])
       }
 
@@ -74,7 +74,7 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
 
     fetch,
 
-    async add(project: Omit<Project, 'id' | 'created_at'>) {
+    async add(project: Omit<Project, 'id' | 'createdAt'>) {
       isLoading.value = true
       await projectsStore.add(project)
       await fetch()

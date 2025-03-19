@@ -24,7 +24,7 @@ export const useProjectsStore = defineStore('projects', {
       this.pagination = pagination
     },
 
-    async add(project: Omit<Project, 'id' | 'created_at'>) {
+    async add(project: Omit<Project, 'id' | 'createdAt'>) {
       const [newProject] = await addProject(project)
       this.items.push(newProject)
     },

@@ -30,21 +30,21 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
   >
     <VaCard
       v-for="project in projects"
-      :key="project.project_name"
+      :key="project.name"
       :style="{ '--va-card-outlined-border': '1px solid var(--va-background-element)' }"
       outlined
     >
       <VaCardContent class="flex flex-col h-full">
-        <div class="text-[var(--va-secondary)]">{{ new Date(project.created_at).toLocaleDateString() }}</div>
+        <div class="text-[var(--va-secondary)]">{{ new Date(project.createdAt).toLocaleDateString() }}</div>
         <div class="flex flex-col items-center gap-4 grow">
           <h4 class="va-h4 text-center self-stretch overflow-hidden line-clamp-2 text-ellipsis">
-            {{ project.project_name }}
+            {{ project.name }}
           </h4>
           <p>
-            <span class="text-[var(--va-secondary)]">Owner: </span>
-            <span v-if="getUserById(project.project_owner)">{{ getUserById(project.project_owner)!.fullname }}</span>
+            <span class="text-[var(--va-secondary)]">Ответственный: </span>
+            <span v-if="getUserById(project.responsibleId)">{{ getUserById(project.responsibleId)!.name }}</span>
           </p>
-          <VaAvatarGroup class="my-4" :options="getTeamOptions(project.team)" :max="5" />
+          <VaAvatarGroup class="my-4" :options="getTeamOptions(project.participantIds)" :max="5" />
           <ProjectStatusBadge :status="project.status" />
         </div>
         <VaDivider class="my-6" />
@@ -55,5 +55,5 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
       </VaCardContent>
     </VaCard>
   </VaInnerLoading>
-  <div v-else class="p-4 flex justify-center items-center text-[var(--va-secondary)]">No projects</div>
+  <div v-else class="p-4 flex justify-center items-center text-[var(--va-secondary)]">Нет проектов</div>
 </template>
