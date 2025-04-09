@@ -18,7 +18,9 @@ import ru.giv13.infocrm.project.*;
 import ru.giv13.infocrm.user.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -45,7 +47,7 @@ public class SecurityConfig {
 
     @Bean
     public List<User> usersDemo(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository, StatusRepository statusRepository, ProjectRepository projectRepository) {
-        List<Permission> userPermissions = new ArrayList<>(List.of(
+        Set<Permission> userPermissions = new HashSet<>(Set.of(
                 (new Permission()).setName(EPermisson.PROJECT_READ).setDisplayName("Проекты:чтение"),
                 (new Permission()).setName(EPermisson.PROJECT_CREATE).setDisplayName("Проекты:создание"),
                 (new Permission()).setName(EPermisson.PROJECT_UPDATE).setDisplayName("Проекты:обновление")
@@ -54,7 +56,7 @@ public class SecurityConfig {
         Role userRole = (new Role()).setName(ERole.USER).setDisplayName("Пользователь").setPermissions(userPermissions);
         roleRepository.save(userRole);
 
-        List<Permission> adminPermissions = new ArrayList<>(List.of(
+        Set<Permission> adminPermissions = new HashSet<>(Set.of(
                 (new Permission()).setName(EPermisson.PROJECT_DELETE).setDisplayName("Проекты:удаление"),
                 (new Permission()).setName(EPermisson.USER_READ).setDisplayName("Пользователи:чтение"),
                 (new Permission()).setName(EPermisson.USER_CREATE).setDisplayName("Пользователи:создание"),
@@ -67,8 +69,8 @@ public class SecurityConfig {
         roleRepository.save(adminRole);
 
         List<User> users = List.of(
-                (new User()).setName("Админ").setUsername("admin").setEmail("admin@mail.ru").setRoles(List.of(userRole, adminRole)).setPassword(passwordEncoder().encode("admin")),
-                (new User()).setName("Юзер").setUsername("user").setEmail("user@mail.ru").setRoles(List.of(userRole)).setPassword(passwordEncoder().encode("user"))
+                (new User()).setName("Админ").setUsername("admin").setEmail("admin@mail.ru").setRoles(Set.of(userRole, adminRole)).setPassword(passwordEncoder().encode("admin")),
+                (new User()).setName("Юзер").setUsername("user").setEmail("user@mail.ru").setRoles(Set.of(userRole)).setPassword(passwordEncoder().encode("user"))
         );
         userRepository.saveAll(users);
 

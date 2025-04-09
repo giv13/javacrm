@@ -14,6 +14,7 @@ import ru.giv13.infocrm.user.dto.UserProfileDto;
 import ru.giv13.infocrm.user.dto.UserRegisterDto;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class AuthService {
         }
         User user = modelMapper.map(userRegisterDto, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        roleRepository.findByName(ERole.USER).ifPresent(userRole -> user.setRoles(List.of(userRole)));
+        roleRepository.findByName(ERole.USER).ifPresent(userRole -> user.setRoles(Set.of(userRole)));
         userRepository.save(user);
         jwtService.generateCookie(user);
         return modelMapper.map(user, UserProfileDto.class);

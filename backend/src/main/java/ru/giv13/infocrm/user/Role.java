@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -32,7 +33,7 @@ public class Role {
     @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIgnore
-    private List<Permission> permissions;
+    private Set<Permission> permissions;
 
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
