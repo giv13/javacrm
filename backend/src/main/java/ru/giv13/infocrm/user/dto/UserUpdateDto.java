@@ -2,21 +2,28 @@ package ru.giv13.infocrm.user.dto;
 
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import ru.giv13.infocrm.security.Password;
 import ru.giv13.infocrm.security.PasswordConfirmation;
+import ru.giv13.infocrm.system.Exists;
 import ru.giv13.infocrm.system.NullOrNotBlank;
 import ru.giv13.infocrm.user.Role;
 
 import java.util.List;
 
 @Data
-@GroupSequence({ UserUpdateDto.class, UserUpdateDto.FirstGroup.class, UserUpdateDto.SecondGroup.class })
+@GroupSequence({ UserUpdateDto.class, UserUpdateDto.FirstGroup.class, UserUpdateDto.SecondGroup.class, UserUpdateDto.ThirdGroup.class })
 @PasswordConfirmation(groups = UserUpdateDto.SecondGroup.class)
-public class UserUpdateDto implements PasswordConfirmable {
+@Exists(groups = UserUpdateDto.ThirdGroup.class)
+public class UserUpdateDto implements PasswordConfirmable, ExistsCheckable {
     public interface FirstGroup {}
     public interface SecondGroup {}
+    public interface ThirdGroup {}
+
+    @NotNull
+    private Integer id;
 
     @NullOrNotBlank(groups = FirstGroup.class)
     private String name;

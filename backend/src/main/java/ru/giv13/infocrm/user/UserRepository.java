@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @NonNull
     List<User> findAll();
 
-    boolean existsByUsername(String username);
+    boolean existsByUsernameAndIdNot(String username, Integer id);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndIdNot(String email, Integer id);
 }

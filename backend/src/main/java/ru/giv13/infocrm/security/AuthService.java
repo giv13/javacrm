@@ -8,12 +8,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.giv13.infocrm.user.*;
+import ru.giv13.infocrm.user.ERole;
+import ru.giv13.infocrm.user.RoleRepository;
+import ru.giv13.infocrm.user.User;
+import ru.giv13.infocrm.user.UserRepository;
 import ru.giv13.infocrm.user.dto.UserLoginDto;
 import ru.giv13.infocrm.user.dto.UserProfileDto;
 import ru.giv13.infocrm.user.dto.UserRegisterDto;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -28,12 +30,6 @@ public class AuthService {
 
     @Transactional
     public UserProfileDto register(UserRegisterDto userRegisterDto) {
-        if (userRepository.existsByUsername(userRegisterDto.getUsername())) {
-            throw new UserAlreadyExistsException("Пользователь " + userRegisterDto.getUsername() + " уже существует");
-        }
-        if (userRepository.existsByEmail(userRegisterDto.getEmail())) {
-            throw new UserAlreadyExistsException("Пользователь " + userRegisterDto.getEmail() + " уже существует");
-        }
         User user = modelMapper.map(userRegisterDto, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         roleRepository.findByName(ERole.USER).ifPresent(userRole -> user.setRoles(Set.of(userRole)));
