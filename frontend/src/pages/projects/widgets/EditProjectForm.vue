@@ -21,14 +21,14 @@ const defaultNewProject: EmptyProject = {
   description: '',
   status: undefined,
   responsibleId: undefined,
-  participantIds: [],
+  participants: [],
 }
 
 const newProject = ref({ ...defaultNewProject })
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newProject.value).some((key) => {
-    if (key === 'participantIds') {
+    if (key === 'participants') {
       return false
     }
 
@@ -62,7 +62,7 @@ watch(
 const required = (v: string | SelectOption) => !!v || 'Это поле обязательно для заполнения'
 
 const ownerFiltersSearch = ref('')
-const teamFiltersSearch = ref('')
+const participantsFiltersSearch = ref('')
 </script>
 
 <template>
@@ -87,9 +87,9 @@ const teamFiltersSearch = ref('')
       </template>
     </VaSelect>
     <VaSelect
-      v-model="newProject.participantIds"
-      v-model:search="teamFiltersSearch"
-      label="Team"
+      v-model="newProject.participants"
+      v-model:search="participantsFiltersSearch"
+      label="Участники"
       text-by="name"
       track-by="id"
       value-by="id"

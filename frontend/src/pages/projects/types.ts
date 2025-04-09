@@ -12,7 +12,7 @@ export type Project = {
   description: string
   status: Status
   responsibleId: User['id']
-  participantIds: User['id'][]
+  participants: User['id'][]
   createdAt: string
 }
 

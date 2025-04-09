@@ -8,7 +8,7 @@ export type Pagination = {
 }
 
 export type Sorting = {
-  sortBy: 'responsibleId' | 'participantIds' | 'createdAt'
+  sortBy: 'responsibleId' | 'participants' | 'createdAt'
   sortingOrder: 'asc' | 'desc' | null
 }
 

@@ -36,8 +36,8 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
         return getUserById(obj.responsibleId)?.name
       }
 
-      if (sortBy === 'participantIds') {
-        return obj.participantIds.map((user: any) => getUserById(user)?.name || '').join(', ')
+      if (sortBy === 'participants') {
+        return obj.participants.map((user: any) => getUserById(user)?.name || '').join(', ')
       }
 
       if (sortBy === 'createdAt') {

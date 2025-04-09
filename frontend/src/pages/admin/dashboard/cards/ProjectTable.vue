@@ -11,7 +11,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Наименование', key: 'name', sortable: true },
   { label: 'Статус', key: 'status', sortable: true },
   { label: 'Ответственный', key: 'responsibleId', sortable: true },
-  { label: 'Участники', key: 'participantIds', sortable: true },
+  { label: 'Участники', key: 'participants', sortable: true },
 ])
 
 const pagination = ref<Pagination>({ page: 1, perPage: 5, total: 0 })
@@ -19,7 +19,7 @@ const { projects, isLoading, sorting } = useProjects({
   pagination,
 })
 
-const { getTeamOptions, getUserById } = useProjectUsers()
+const { getParticipantsOptions, getUserById } = useProjectUsers()
 </script>
 
 <template>
@@ -55,8 +55,8 @@ const { getTeamOptions, getUserById } = useProjectUsers()
               {{ getUserById(rowData.responsibleId)?.name }}
             </div>
           </template>
-          <template #cell(participantIds)="{ rowData }">
-            <VaAvatarGroup size="small" :options="getTeamOptions(rowData.participantIds)" :max="2" />
+          <template #cell(participants)="{ rowData }">
+            <VaAvatarGroup size="small" :options="getParticipantsOptions(rowData.participants)" :max="2" />
           </template>
         </VaDataTable>
       </div>

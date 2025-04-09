@@ -14,8 +14,8 @@ export function useProjectUsers() {
     return colors[index]
   }
 
-  const getTeamOptions = (team: Project['participantIds']) => {
-    return team.reduce(
+  const getParticipantsOptions = (participants: Project['participants']) => {
+    return participants.reduce(
       (acc, userId) => {
         const user = getUserById(userId)
 
@@ -37,6 +37,6 @@ export function useProjectUsers() {
   return {
     users,
     getUserById,
-    getTeamOptions,
+    getParticipantsOptions,
   }
 }

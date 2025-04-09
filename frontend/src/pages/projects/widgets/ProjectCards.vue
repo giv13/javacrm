@@ -19,7 +19,7 @@ defineEmits<{
   (event: 'delete', project: Project): void
 }>()
 
-const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
+const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
 </script>
 
 <template>
@@ -44,7 +44,7 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
             <span class="text-[var(--va-secondary)]">Ответственный: </span>
             <span v-if="getUserById(project.responsibleId)">{{ getUserById(project.responsibleId)!.name }}</span>
           </p>
-          <VaAvatarGroup class="my-4" :options="getTeamOptions(project.participantIds)" :max="5" />
+          <VaAvatarGroup class="my-4" :options="getParticipantsOptions(project.participants)" :max="5" />
           <ProjectStatusBadge :status="project.status" />
         </div>
         <VaDivider class="my-6" />

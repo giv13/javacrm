@@ -10,7 +10,7 @@ import { useVModel } from '@vueuse/core'
 const columns = defineVaDataTableColumns([
   { label: 'Наименование', key: 'name', sortable: true },
   { label: 'Ответственный', key: 'responsibleId', sortable: true },
-  { label: 'Участники', key: 'participantIds', sortable: true },
+  { label: 'Участники', key: 'participants', sortable: true },
   { label: 'Статус', key: 'status', sortable: true },
   { label: 'Дата создания', key: 'createdAt', sortable: true },
   { label: ' ', key: 'actions' },
@@ -48,7 +48,7 @@ const sortByVModel = useVModel(props, 'sortBy', emit)
 const sortingOrderVModel = useVModel(props, 'sortingOrder', emit)
 
 const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage))
-const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
+const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
 </script>
 
 <template>
@@ -71,8 +71,8 @@ const { getUserById, getTeamOptions } = inject<any>('ProjectsPage')
           {{ getUserById(rowData.responsibleId).name }}
         </div>
       </template>
-      <template #cell(participantIds)="{ rowData: project }">
-        <VaAvatarGroup size="small" :options="getTeamOptions(project.participantIds)" :max="5" />
+      <template #cell(participants)="{ rowData: project }">
+        <VaAvatarGroup size="small" :options="getParticipantsOptions(project.participants)" :max="5" />
       </template>
       <template #cell(status)="{ rowData: project }">
         <ProjectStatusBadge :status="project.status" />

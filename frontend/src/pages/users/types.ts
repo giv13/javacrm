@@ -15,5 +15,5 @@ export type User = {
   avatar: string
   active: boolean
   roles: Role[]
-  projectIds: Project['id'][]
+  projects: Project['id'][]
 }

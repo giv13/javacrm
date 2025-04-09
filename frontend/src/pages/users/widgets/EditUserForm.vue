@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const defaultNewUser: Omit<User, 'id'> = {
+const defaultNewUser: Omit<User, 'id' | 'projects'> = {
   name: '',
   username: '',
   email: '',
@@ -25,19 +25,18 @@ const defaultNewUser: Omit<User, 'id'> = {
   avatar: '',
   active: true,
   roles: [],
-  projectIds: [],
 }
 
 const newUser = ref<User>({ ...defaultNewUser } as User)
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
-    if (key === 'avatar' || key === 'projectIds') {
+    if (key === 'avatar') {
       return false
     }
 
     return (
-      newUser.value[key as keyof Omit<User, 'id'>] !== (props.user ?? defaultNewUser)?.[key as keyof Omit<User, 'id'>]
+      newUser.value[key as keyof Omit<User, 'id' | 'projects'>] !== (props.user ?? defaultNewUser)?.[key as keyof Omit<User, 'id' | 'projects'>]
     )
   })
 })
@@ -49,7 +48,7 @@ defineExpose({
 const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
 
 watch(
-  [() => props.user, projects],
+  [() => props.user],
   () => {
     if (!props.user) {
       return
@@ -57,7 +56,6 @@ watch(
 
     newUser.value = {
       ...props.user,
-      projectIds: props.user.projectIds.filter((projectId) => projects.value.find(({ id }) => id === projectId)),
       avatar: props.user.avatar || '',
     }
   },
@@ -134,18 +132,6 @@ const roleSelectOptions: { text: Capitalize<Lowercase<Role['displayName']>>; val
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.email]"
           name="email"
-        />
-        <VaSelect
-          v-model="newUser.projectIds"
-          label="Проекты"
-          class="w-full sm:w-1/2"
-          :options="projects"
-          value-by="id"
-          text-by="name"
-          :rules="[validators.required]"
-          name="projects"
-          multiple
-          :max-visible-options="2"
         />
       </div>
 

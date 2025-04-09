@@ -13,11 +13,11 @@ const doShowAsCards = useLocalStorage('projects-view', true)
 
 const { projects, update, add, isLoading, remove, pagination, sorting } = useProjects()
 
-const { users, getTeamOptions, getUserById } = useProjectUsers()
+const { users, getParticipantsOptions, getUserById } = useProjectUsers()
 
 provide('ProjectsPage', {
   users,
-  getTeamOptions,
+  getParticipantsOptions,
   getUserById,
 })
 

@@ -12,7 +12,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Имя пользователя', key: 'username', sortable: true },
   { label: 'E-mail', key: 'email', sortable: true },
   { label: 'Роли', key: 'roles', sortable: true },
-  { label: 'Проекты', key: 'projectIds', sortable: true },
+  { label: 'Проекты', key: 'projects', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -125,9 +125,9 @@ const formatProjectNames = (projects: Project['id'][]) => {
       </template>
     </template>
 
-    <template #cell(projectIds)="{ rowData }">
+    <template #cell(projects)="{ rowData }">
       <div class="ellipsis max-w-[300px] lg:max-w-[450px]">
-        {{ formatProjectNames(rowData.projectIds) }}
+        {{ formatProjectNames(rowData.projects) }}
       </div>
     </template>
 
