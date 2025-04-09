@@ -11,6 +11,7 @@ export type User = {
   name: string
   username: string
   email: string
+  password: string
   notes: string
   avatar: string
   active: boolean

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { PropType, computed, ref, watch } from 'vue'
 import { useForm } from 'vuestic-ui'
-import { User, Role } from '../types'
+import { User } from '../types'
 import UserAvatar from './UserAvatar.vue'
-import { useProjects } from '../../projects/composables/useProjects'
+import { useRoles } from '../composables/useRoles'
 import { validators } from '../../../services/utils'
 
 const props = defineProps({
@@ -21,6 +21,7 @@ const defaultNewUser: Omit<User, 'id' | 'projects'> = {
   name: '',
   username: '',
   email: '',
+  password: '',
   notes: '',
   avatar: '',
   active: true,
@@ -31,7 +32,7 @@ const newUser = ref<User>({ ...defaultNewUser } as User)
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
-    if (key === 'avatar') {
+    if (key === 'avatar' || key === 'roles') {
       return false
     }
 
@@ -45,10 +46,10 @@ defineExpose({
   isFormHasUnsavedChanges,
 })
 
-const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
+const { roles } = useRoles()
 
 watch(
-  [() => props.user],
+  [() => props.user, roles],
   () => {
     if (!props.user) {
       return
@@ -56,6 +57,7 @@ watch(
 
     newUser.value = {
       ...props.user,
+      roles: props.user.roles.filter(role => roles.value.find(({ id }) => id === role.id)),
       avatar: props.user.avatar || '',
     }
   },
@@ -81,11 +83,6 @@ const onSave = () => {
     emit('save', newUser.value)
   }
 }
-
-const roleSelectOptions: { text: Capitalize<Lowercase<Role['displayName']>>; value: Role['name'] }[] = [
-  { text: 'Admin', value: 'admin' },
-  { text: 'User', value: 'user' },
-]
 </script>
 
 <template>
@@ -133,6 +130,12 @@ const roleSelectOptions: { text: Capitalize<Lowercase<Role['displayName']>>; val
           :rules="[validators.required, validators.email]"
           name="email"
         />
+        <VaInput
+          v-model="newUser.password"
+          label="Пароль"
+          class="w-full sm:w-1/2"
+          name="password"
+        />
       </div>
 
       <div class="flex gap-4 w-full">
@@ -141,10 +144,13 @@ const roleSelectOptions: { text: Capitalize<Lowercase<Role['displayName']>>; val
             v-model="newUser.roles"
             label="Роли"
             class="w-full"
-            :options="roleSelectOptions"
+            :options="roles"
+            value-by="id"
+            text-by="displayName"
             :rules="[validators.required]"
-            name="role"
-            value-by="value"
+            name="roles"
+            multiple
+            :max-visible-options="2"
           />
         </div>
 

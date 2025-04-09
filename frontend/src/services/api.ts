@@ -7,6 +7,7 @@ export const api = {
   register: () => `${apiBaseUrl}/auth/register`,
   login: () => `${apiBaseUrl}/auth/login`,
   logout: () => `${apiBaseUrl}/auth/logout`,
+  allRoles: () => `${apiBaseUrl}/roles`,
   allUsers: () => `${apiBaseUrl}/users`,
   user: (id: number) => `${apiBaseUrl}/users/${id}`,
   users: ({ page, pageSize }: { page: number; pageSize: number }) =>
@@ -24,6 +25,10 @@ export const get = (url: string) => {
 
 export const post = (url: string, data = {}, errors = {}) => {
   return request(url, 'POST', data, errors)
+}
+
+export const put = (url: string, data = {}, errors = {}) => {
+  return request(url, 'PUT', data, errors)
 }
 
 const request = async (url: string, method = 'GET', data = {}, errors: Record<string, string[]> = {}) => {
