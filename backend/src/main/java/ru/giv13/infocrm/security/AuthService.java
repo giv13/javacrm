@@ -1,6 +1,7 @@
 package ru.giv13.infocrm.security;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -8,6 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.giv13.infocrm.user.*;
+import ru.giv13.infocrm.user.dto.UserLoginDto;
+import ru.giv13.infocrm.user.dto.UserProfileDto;
+import ru.giv13.infocrm.user.dto.UserRegisterDto;
 
 import java.util.List;
 
@@ -19,29 +23,30 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final ModelMapper modelMapper;
 
     @Transactional
-    public User register(RegisterRequest request) {
-        if (userRepository.existsByUsernameOrEmail(request.username(), request.email())) {
-            throw new UserAlreadyExistsException("Такой пользователь уже существует");
+    public UserProfileDto register(UserRegisterDto userRegisterDto) {
+        if (userRepository.existsByUsername(userRegisterDto.getUsername())) {
+            throw new UserAlreadyExistsException("Пользователь " + userRegisterDto.getUsername() + " уже существует");
         }
-        User user = (new User())
-                .setName(request.name())
-                .setUsername(request.username())
-                .setEmail(request.email())
-                .setPassword(passwordEncoder.encode(request.password()));
+        if (userRepository.existsByEmail(userRegisterDto.getEmail())) {
+            throw new UserAlreadyExistsException("Пользователь " + userRegisterDto.getEmail() + " уже существует");
+        }
+        User user = modelMapper.map(userRegisterDto, User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         roleRepository.findByName(ERole.USER).ifPresent(userRole -> user.setRoles(List.of(userRole)));
         userRepository.save(user);
         jwtService.generateCookie(user);
-        return user;
+        return modelMapper.map(user, UserProfileDto.class);
     }
 
     @Transactional(readOnly = true)
-    public User login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+    public UserProfileDto login(UserLoginDto userLoginDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
         User user = (User) authentication.getPrincipal();
         jwtService.generateCookie(user);
-        return user;
+        return modelMapper.map(user, UserProfileDto.class);
     }
 
     public void logout() {

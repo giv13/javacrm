@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 public class PasswordValidator implements ConstraintValidator<Password, String> {
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
+        if (password == null) return true;
         org.passay.PasswordValidator validator = new org.passay.PasswordValidator(
                 getMessageResolver(),
                 new LengthRule(8, 30),

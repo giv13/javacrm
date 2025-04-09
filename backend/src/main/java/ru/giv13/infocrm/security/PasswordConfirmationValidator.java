@@ -2,12 +2,12 @@ package ru.giv13.infocrm.security;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ru.giv13.infocrm.user.RegisterRequest;
+import ru.giv13.infocrm.user.dto.PasswordConfirmable;
 
-public class PasswordConfirmationValidator implements ConstraintValidator<PasswordConfirmation, RegisterRequest> {
+public class PasswordConfirmationValidator implements ConstraintValidator<PasswordConfirmation, PasswordConfirmable> {
     @Override
-    public boolean isValid(RegisterRequest request, ConstraintValidatorContext context) {
-        if (request.password().equals(request.passwordConfirmation())) {
+    public boolean isValid(PasswordConfirmable passwordConfirmable, ConstraintValidatorContext context) {
+        if (passwordConfirmable.getPassword() == null || passwordConfirmable.getPassword().equals(passwordConfirmable.getPasswordConfirmation())) {
             return true;
         }
         context.buildConstraintViolationWithTemplate("Пароли не совпадают")

@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import ru.giv13.infocrm.user.UserService;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserService userService;
     private final HandlerExceptionResolver handlerExceptionResolver;
     @Value("${security.jwt.token-name}")
     private String tokenName;

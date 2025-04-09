@@ -21,6 +21,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +55,11 @@ public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(AuthorizationDeniedException.class)
     private Response<String> onAuthorizationDeniedException() {
         return Response.er("Доступ запрещен", HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    private Response<String> onNoResourceFoundException() {
+        return Response.er("Ресурс не найден", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

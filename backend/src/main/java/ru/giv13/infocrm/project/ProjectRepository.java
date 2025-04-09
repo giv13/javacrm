@@ -7,7 +7,7 @@ import org.springframework.lang.NonNull;
 import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
-    @EntityGraph(attributePaths = { "status", "participantIds" })
+    @EntityGraph(attributePaths = { "status", "participants" })
     @NonNull
     List<Project> findAll();
 }

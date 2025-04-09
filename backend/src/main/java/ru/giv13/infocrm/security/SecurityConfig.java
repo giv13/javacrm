@@ -57,8 +57,8 @@ public class SecurityConfig {
         List<Permission> adminPermissions = new ArrayList<>(List.of(
                 (new Permission()).setName(EPermisson.PROJECT_DELETE).setDisplayName("Проекты:удаление"),
                 (new Permission()).setName(EPermisson.USER_READ).setDisplayName("Пользователи:чтение"),
-                (new Permission()).setName(EPermisson.PROJECT_CREATE).setDisplayName("Пользователи:создание"),
-                (new Permission()).setName(EPermisson.PROJECT_UPDATE).setDisplayName("Пользователи:обновление"),
+                (new Permission()).setName(EPermisson.USER_CREATE).setDisplayName("Пользователи:создание"),
+                (new Permission()).setName(EPermisson.USER_UPDATE).setDisplayName("Пользователи:обновление"),
                 (new Permission()).setName(EPermisson.USER_DELETE).setDisplayName("Пользователи:удаление")
         ));
         permissionRepository.saveAll(adminPermissions);
