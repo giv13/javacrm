@@ -1,5 +1,5 @@
 import { User } from '../../pages/users/types'
-import { api, get } from '../../services/api'
+import { api, get, put } from '../../services/api'
 
 export type Pagination = {
   page: number
@@ -53,19 +53,8 @@ export const addUser = async (user: User) => {
   throw new Error(result.error)
 }
 
-export const updateUser = async (user: User) => {
-  const headers = new Headers()
-  headers.append('Content-Type', 'application/json')
-
-  const result = await fetch(api.user(user.id), { method: 'PUT', body: JSON.stringify(user), headers }).then((r) =>
-    r.json(),
-  )
-
-  if (!result.error) {
-    return result
-  }
-
-  throw new Error(result.error)
+export const updateUser = async (user: User, errors: Object) => {
+  return await put(api.user(user.id), user, errors)
 }
 
 export const removeUser = async (user: User) => {

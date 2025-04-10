@@ -35,7 +35,7 @@ watchEffect(() => {
   }
 })
 
-const onUserSaved = async (user: User) => {
+const onUserSaved = async (user: User, errors: Object, ok: Function) => {
   if (user.avatar.startsWith('blob:')) {
     const blob = await fetch(user.avatar).then((r) => r.blob())
     const { publicUrl } = await usersApi.uploadAvatar(blob)
@@ -43,13 +43,12 @@ const onUserSaved = async (user: User) => {
   }
 
   if (userToEdit.value) {
-    await usersApi.update(user)
-    if (!error.value) {
-      notify({
-        message: `Пользователь ${user.username} обновлен`,
-        color: 'success',
-      })
-    }
+    await usersApi.update(user, errors)
+    notify({
+      message: `Пользователь ${user.username} обновлен`,
+      color: 'success',
+    })
+    ok()
   } else {
     await usersApi.add(user)
 
@@ -144,9 +143,8 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       :save-button-label="userToEdit ? 'Сохранить' : 'Добавить'"
       @close="cancel"
       @save="
-        (user) => {
-          onUserSaved(user)
-          ok()
+        (user, errors) => {
+          onUserSaved(user, errors, ok)
         }
       "
     />

@@ -36,8 +36,8 @@ export const useUsersStore = defineStore('users', {
       return newUser
     },
 
-    async update(user: User) {
-      const [updatedUser] = await updateUser(user)
+    async update(user: User, errors: Object) {
+      const updatedUser = await updateUser(user, errors)
       const index = this.items.findIndex(({ id }) => id === user.id)
       this.items.splice(index, 1, updatedUser)
       return updatedUser

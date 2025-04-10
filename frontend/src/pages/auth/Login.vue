@@ -13,6 +13,7 @@
       class="mb-4"
       label="Имя пользователя"
       type="text"
+      name="username"
     />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
@@ -23,6 +24,7 @@
         :type="isPasswordVisible.value ? 'text' : 'password'"
         class="mb-4"
         label="Пароль"
+        name="password"
         @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>

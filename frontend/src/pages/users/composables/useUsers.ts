@@ -97,12 +97,10 @@ export const useUsers = (options?: {
       }
     },
 
-    async update(user: User) {
+    async update(user: User, errors: Object) {
       isLoading.value = true
       try {
-        return await usersStore.update(user)
-      } catch (e) {
-        error.value = e
+        return await usersStore.update(user, errors)
       } finally {
         isLoading.value = false
       }

@@ -49,5 +49,10 @@ public class UserUpdateDto implements PasswordConfirmable, ExistsCheckable {
 
     private boolean isActive;
 
-    private List<Role> roles;
+    private List<Integer> roles;
+
+    public List<Role> getRoles() {
+        if (roles == null) return null;
+        return roles.stream().map(id -> (new Role()).setId(id)).toList();
+    }
 }

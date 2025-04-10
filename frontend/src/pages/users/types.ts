@@ -1,4 +1,4 @@
-import { Project } from '../projects/types'
+import {Project, Status} from '../projects/types'
 
 export type Role = {
   id: number
@@ -12,9 +12,14 @@ export type User = {
   username: string
   email: string
   password: string
+  passwordConfirmation: string
   notes: string
   avatar: string
   active: boolean
   roles: Role[]
   projects: Project['id'][]
+}
+
+export type EmptyUser = Omit<User, 'id' | 'roles' | 'projects'> & {
+  roles: number[]
 }

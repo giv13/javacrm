@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { PropType, computed, ref, watch } from 'vue'
+import {PropType, computed, ref, watch, reactive} from 'vue'
 import { useForm } from 'vuestic-ui'
-import { User } from '../types'
+import { User, EmptyUser } from '../types'
 import UserAvatar from './UserAvatar.vue'
 import { useRoles } from '../composables/useRoles'
-import { validators } from '../../../services/utils'
 
 const props = defineProps({
   user: {
@@ -17,18 +16,27 @@ const props = defineProps({
   },
 })
 
-const defaultNewUser: Omit<User, 'id' | 'projects'> = {
+const defaultNewUser: EmptyUser = {
   name: '',
   username: '',
   email: '',
   password: '',
+  passwordConfirmation: '',
   notes: '',
   avatar: '',
   active: true,
   roles: [],
 }
 
-const newUser = ref<User>({ ...defaultNewUser } as User)
+const formErrors = reactive({
+  name: [],
+  username: [],
+  email: [],
+  password: [],
+  passwordConfirmation: [],
+});
+
+const newUser = ref({ ...defaultNewUser })
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
@@ -37,7 +45,7 @@ const isFormHasUnsavedChanges = computed(() => {
     }
 
     return (
-      newUser.value[key as keyof Omit<User, 'id' | 'projects'>] !== (props.user ?? defaultNewUser)?.[key as keyof Omit<User, 'id' | 'projects'>]
+      newUser.value[key as keyof EmptyUser] !== (props.user ?? defaultNewUser)?.[key as keyof EmptyUser]
     )
   })
 })
@@ -57,7 +65,7 @@ watch(
 
     newUser.value = {
       ...props.user,
-      roles: props.user.roles.filter(role => roles.value.find(({ id }) => id === role.id)),
+      roles: props.user.roles.filter(role => roles.value.find(({ id }) => id === role.id)).map(role => role.id),
       avatar: props.user.avatar || '',
     }
   },
@@ -80,7 +88,7 @@ const emit = defineEmits(['close', 'save'])
 
 const onSave = () => {
   if (form.validate()) {
-    emit('save', newUser.value)
+    emit('save', newUser.value, formErrors)
   }
 }
 </script>
@@ -108,56 +116,94 @@ const onSave = () => {
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
+          :error="formErrors.name.length > 0"
+          :errorMessages="formErrors.name"
+          @input="formErrors.name = []"
           v-model="newUser.name"
           label="Имя"
           class="w-full sm:w-1/2"
-          :rules="[validators.required]"
           name="name"
         />
         <VaInput
+          :error="formErrors.username.length > 0"
+          :errorMessages="formErrors.username"
+          @input="formErrors.username = []"
           v-model="newUser.username"
           label="Имя пользователя"
           class="w-full sm:w-1/2"
-          :rules="[validators.required]"
           name="username"
         />
       </div>
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
+          :error="formErrors.email.length > 0"
+          :errorMessages="formErrors.email"
+          @input="formErrors.email = []"
           v-model="newUser.email"
           label="E-mail"
           class="w-full sm:w-1/2"
-          :rules="[validators.required, validators.email]"
           name="email"
         />
-        <VaInput
-          v-model="newUser.password"
-          label="Пароль"
+        <VaSelect
+          v-model="newUser.roles"
+          label="Роли"
           class="w-full sm:w-1/2"
-          name="password"
+          :options="roles"
+          value-by="id"
+          text-by="displayName"
+          name="roles"
+          multiple
+          :max-visible-options="2"
         />
       </div>
 
-      <div class="flex gap-4 w-full">
-        <div class="w-1/2">
-          <VaSelect
-            v-model="newUser.roles"
-            label="Роли"
-            class="w-full"
-            :options="roles"
-            value-by="id"
-            text-by="displayName"
-            :rules="[validators.required]"
-            name="roles"
-            multiple
-            :max-visible-options="2"
-          />
-        </div>
-
-        <div class="flex items-center w-1/2 mt-4">
-          <VaCheckbox v-model="newUser.active" label="Активный" class="w-full" name="active" />
-        </div>
+      <div class="flex gap-4 flex-col sm:flex-row w-full">
+        <VaValue v-slot="isPasswordVisible" :default-value="false">
+          <VaInput
+            v-model="newUser.password"
+            :error="formErrors.password.length > 0"
+            :errorMessages="formErrors.password"
+            :errorCount="3"
+            @input="formErrors.password = []"
+            :type="isPasswordVisible.value ? 'text' : 'password'"
+            class="w-full sm:w-1/2"
+            label="Новый пароль"
+            name="password"
+            @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
+          >
+            <template #appendInner>
+              <VaIcon
+                :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
+                class="cursor-pointer"
+                color="secondary"
+              />
+            </template>
+          </VaInput>
+        </VaValue>
+        <VaValue v-slot="isPasswordVisible" :default-value="false">
+          <VaInput
+            v-model="newUser.passwordConfirmation"
+            :error="formErrors.passwordConfirmation.length > 0"
+            :errorMessages="formErrors.passwordConfirmation"
+            @input="formErrors.passwordConfirmation = []"
+            :type="isPasswordVisible.value ? 'text' : 'password'"
+            class="w-full sm:w-1/2"
+            label="Повторите новый пароль"
+            name="passwordConfirmation"
+            @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
+          >
+            <template #appendInner>
+              <VaIcon
+                :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
+                class="cursor-pointer"
+                color="secondary"
+              />
+            </template>
+          </VaInput>
+        </VaValue>
       </div>
+
+      <VaCheckbox v-model="newUser.active" label="Активный" class="w-full" name="active" />
 
       <VaTextarea v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">

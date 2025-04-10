@@ -13,6 +13,7 @@
       class="mb-4"
       label="E-mail"
       type="email"
+      name="email"
     />
     <VaInput
       v-model="formData.username"
@@ -22,6 +23,7 @@
       class="mb-4"
       label="Имя пользователя"
       type="text"
+      name="username"
     />
     <VaInput
       v-model="formData.name"
@@ -31,10 +33,10 @@
       class="mb-4"
       label="Имя"
       type="text"
+      name="name"
     />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
-        ref="password1"
         v-model="formData.password"
         :error="formErrors.password.length > 0"
         :errorMessages="formErrors.password"
@@ -44,6 +46,7 @@
         class="mb-4"
         label="Пароль"
         messages="От 8 символов, должен содержать латинские буквы в нижнем и верхнем регистре, цифры и спецсимволы"
+        name="password"
         @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
@@ -54,8 +57,9 @@
           />
         </template>
       </VaInput>
+    </VaValue>
+    <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
-        ref="password2"
         v-model="formData.passwordConfirmation"
         :error="formErrors.passwordConfirmation.length > 0"
         :errorMessages="formErrors.passwordConfirmation"
@@ -63,6 +67,7 @@
         :type="isPasswordVisible.value ? 'text' : 'password'"
         class="mb-4"
         label="Повторите пароль"
+        name="passwordConfirmation"
         @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
