@@ -9,9 +9,8 @@ import ru.giv13.infocrm.security.Password;
 import ru.giv13.infocrm.security.PasswordConfirmation;
 import ru.giv13.infocrm.system.Exists;
 import ru.giv13.infocrm.system.NullOrNotBlank;
-import ru.giv13.infocrm.user.Role;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @GroupSequence({ UserUpdateDto.class, UserUpdateDto.FirstGroup.class, UserUpdateDto.SecondGroup.class, UserUpdateDto.ThirdGroup.class })
@@ -49,10 +48,5 @@ public class UserUpdateDto implements PasswordConfirmable, ExistsCheckable {
 
     private boolean isActive;
 
-    private List<Integer> roles;
-
-    public List<Role> getRoles() {
-        if (roles == null) return null;
-        return roles.stream().map(id -> (new Role()).setId(id)).toList();
-    }
+    private Set<Integer> roles;
 }

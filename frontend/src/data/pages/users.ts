@@ -1,5 +1,5 @@
 import { User } from '../../pages/users/types'
-import { api, get, put } from '../../services/api'
+import { api, get, post, put } from '../../services/api'
 
 export type Pagination = {
   page: number
@@ -38,19 +38,8 @@ export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>)
   }
 }
 
-export const addUser = async (user: User) => {
-  const headers = new Headers()
-  headers.append('Content-Type', 'application/json')
-
-  const result = await fetch(api.allUsers(), { method: 'POST', body: JSON.stringify(user), headers }).then((r) =>
-    r.json(),
-  )
-
-  if (!result.error) {
-    return result
-  }
-
-  throw new Error(result.error)
+export const addUser = async (user: User, errors: Object) => {
+  return await post(api.allUsers(), user, errors)
 }
 
 export const updateUser = async (user: User, errors: Object) => {

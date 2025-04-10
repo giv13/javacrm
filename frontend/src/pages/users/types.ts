@@ -1,4 +1,4 @@
-import {Project, Status} from '../projects/types'
+import { Project } from '../projects/types'
 
 export type Role = {
   id: number

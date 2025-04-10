@@ -86,12 +86,10 @@ export const useUsers = (options?: {
 
     fetch,
 
-    async add(user: User) {
+    async add(user: User, errors: Object) {
       isLoading.value = true
       try {
-        return await usersStore.add(user)
-      } catch (e) {
-        error.value = e
+        return await usersStore.add(user, errors)
       } finally {
         isLoading.value = false
       }

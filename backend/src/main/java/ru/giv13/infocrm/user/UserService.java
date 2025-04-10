@@ -11,12 +11,14 @@ import ru.giv13.infocrm.user.dto.UserCreateDto;
 import ru.giv13.infocrm.user.dto.UserDto;
 import ru.giv13.infocrm.user.dto.UserUpdateDto;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
@@ -30,9 +32,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll().stream().map(user -> modelMapper.map(user, UserDto.class)).toList();
     }
 
+    @Transactional
     public UserDto create(UserCreateDto userCreateDto) {
         User user = modelMapper.map(userCreateDto, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(new HashSet<>(roleRepository.findAllById(userCreateDto.getRoles())));
         userRepository.save(user);
         return modelMapper.map(user, UserDto.class);
     }
@@ -42,6 +46,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Пользователь c id = " + id + " не найден"));
         userUpdateDto.setId(null);
         modelMapper.map(userUpdateDto, user);
+        user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
         userRepository.save(user);
         return modelMapper.map(user, UserDto.class);
     }

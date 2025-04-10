@@ -30,8 +30,8 @@ export const useUsersStore = defineStore('users', {
       this.pagination = pagination
     },
 
-    async add(user: User) {
-      const [newUser] = await addUser(user)
+    async add(user: User, errors: Object) {
+      const newUser = await addUser(user, errors)
       this.items.unshift(newUser)
       return newUser
     },

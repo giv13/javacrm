@@ -50,14 +50,12 @@ const onUserSaved = async (user: User, errors: Object, ok: Function) => {
     })
     ok()
   } else {
-    await usersApi.add(user)
-
-    if (!error.value) {
-      notify({
-        message: `Пользователь ${user.username} добавлен`,
-        color: 'success',
-      })
-    }
+    await usersApi.add(user, errors)
+    notify({
+      message: `Пользователь ${user.username} добавлен`,
+      color: 'success',
+    })
+    ok()
   }
 }
 
