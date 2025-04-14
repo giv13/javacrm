@@ -19,6 +19,10 @@ spring:
       hibernate:
         show_sql: true
 
+server:
+  tomcat:
+    max-swallow-size: -1
+
 security:
   jwt:
     expiration: 15m

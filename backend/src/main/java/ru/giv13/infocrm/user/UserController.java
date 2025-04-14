@@ -2,8 +2,10 @@ package ru.giv13.infocrm.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.giv13.infocrm.user.dto.UserCreateDto;
 import ru.giv13.infocrm.user.dto.UserDto;
 import ru.giv13.infocrm.user.dto.UserUpdateDto;
@@ -32,5 +34,11 @@ public class UserController {
     @PreAuthorize("hasAuthority(T(ru.giv13.infocrm.user.EPermisson).USER_UPDATE)")
     public UserDto update(@PathVariable("id") Integer id, @Valid @RequestBody UserUpdateDto userUpdateDto) {
         return userService.update(id, userUpdateDto);
+    }
+
+    @PatchMapping(value = "{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PreAuthorize("hasAnyAuthority(T(ru.giv13.infocrm.user.EPermisson).USER_CREATE, T(ru.giv13.infocrm.user.EPermisson).USER_UPDATE)")
+    public UserDto uploadAvatar(@PathVariable("id") Integer id, @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
+        return userService.uploadAvatar(id, avatar);
     }
 }

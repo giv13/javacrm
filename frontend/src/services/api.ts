@@ -16,7 +16,6 @@ export const api = {
   project: (id: number) => `${apiBaseUrl}/projects/${id}`,
   projects: ({ page, pageSize }: { page: number; pageSize: number }) =>
     `${apiBaseUrl}/projects/?page=${page}&pageSize=${pageSize}`,
-  avatars: () => `${apiBaseUrl}/avatars`,
 }
 
 export const get = (url: string) => {
@@ -27,20 +26,26 @@ export const post = (url: string, data = {}, errors = {}) => {
   return request(url, 'POST', data, errors)
 }
 
+export const patch = (url: string, data = {}, errors = {}, isJson = false) => {
+  return request(url, 'PATCH', data, errors, isJson)
+}
+
 export const put = (url: string, data = {}, errors = {}) => {
   return request(url, 'PUT', data, errors)
 }
 
-const request = async (url: string, method = 'GET', data = {}, errors: Record<string, string[]> = {}) => {
+const request = async (url: string, method = 'GET', data = {}, errors: Record<string, string[]> = {}, isJson = true) => {
   const options: RequestInit = {
     method,
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    }
   }
-  if (Object.keys(data).length > 0) {
-    options.body = JSON.stringify(data)
+  if (isJson) {
+    options.headers = { 'Content-Type': 'application/json' }
+    if (Object.keys(data).length > 0) {
+      options.body = JSON.stringify(data)
+    }
+  } else {
+    options.body = data as FormData
   }
   return await fetch(url, options)
     .then(r => r.json())

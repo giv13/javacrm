@@ -44,8 +44,6 @@ public class UserUpdateDto implements PasswordConfirmable, ExistsCheckable {
 
     private String notes;
 
-    private byte[] avatar;
-
     private boolean isActive;
 
     private Set<Integer> roles;

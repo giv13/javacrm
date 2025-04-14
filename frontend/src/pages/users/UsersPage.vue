@@ -6,6 +6,9 @@ import { User } from './types'
 import { useUsers } from './composables/useUsers'
 import { useModal, useToast } from 'vuestic-ui'
 import { useProjects } from '../projects/composables/useProjects'
+import { useUsersStore } from '../../stores/users'
+
+const usersStore = useUsersStore()
 
 const doShowEditUserModal = ref(false)
 
@@ -36,27 +39,29 @@ watchEffect(() => {
 })
 
 const onUserSaved = async (user: User, errors: Object, ok: Function) => {
-  if (user.avatar.startsWith('blob:')) {
-    const blob = await fetch(user.avatar).then((r) => r.blob())
-    const { publicUrl } = await usersApi.uploadAvatar(blob)
-    user.avatar = publicUrl
-  }
-
   if (userToEdit.value) {
     await usersApi.update(user, errors)
     notify({
       message: `Пользователь ${user.username} обновлен`,
       color: 'success',
     })
-    ok()
   } else {
-    await usersApi.add(user, errors)
+    const { id } = await usersApi.add(user, errors)
+    user.id = id
     notify({
       message: `Пользователь ${user.username} добавлен`,
       color: 'success',
     })
-    ok()
   }
+  if (user.avatar.startsWith('blob:') || (!user.avatar && usersStore.items.find(({ id }) => id === user.id)?.avatar)) {
+    const avatar = user.avatar.startsWith('blob:') ? await fetch(user.avatar).then((r) => r.blob()) : "";
+    user.avatar = await usersApi.uploadAvatar(user, avatar)
+    notify({
+      message: `Изображение для пользователя ${user.username} обновлено`,
+      color: 'success',
+    })
+  }
+  ok()
 }
 
 const onUserDelete = async (user: User) => {

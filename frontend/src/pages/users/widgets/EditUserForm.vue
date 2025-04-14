@@ -104,13 +104,13 @@ const onSave = () => {
       <UserAvatar :user="newUser" size="large" />
       <VaButton preset="primary" size="small">Добавить изображение</VaButton>
       <VaButton
-        v-if="avatar"
+        v-if="avatar || newUser.avatar"
         preset="primary"
         color="danger"
         size="small"
         icon="delete"
         class="z-10"
-        @click.stop="avatar = undefined"
+        @click.stop="avatar = undefined; newUser.avatar = ''"
       />
     </VaFileUpload>
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">

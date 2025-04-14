@@ -1,18 +1,23 @@
 package ru.giv13.infocrm.user;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import ru.giv13.infocrm.system.ImageCropper;
 import ru.giv13.infocrm.user.dto.UserCreateDto;
 import ru.giv13.infocrm.user.dto.UserDto;
 import ru.giv13.infocrm.user.dto.UserUpdateDto;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -43,11 +48,31 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserDto update(Integer id, UserUpdateDto userUpdateDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Пользователь c id = " + id + " не найден"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "user"));
         userUpdateDto.setId(null);
         modelMapper.map(userUpdateDto, user);
         user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
         userRepository.save(user);
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    @Transactional
+    public UserDto uploadAvatar(Integer id, MultipartFile avatar) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "user"));
+        Map<String, String> allowedTypes = Map.of("image/jpeg", "jpg", "image/png", "png");
+        try {
+            if (avatar == null || avatar.isEmpty()) {
+                user.setAvatar(null);
+            } else {
+                if (!allowedTypes.containsKey(avatar.getContentType())) {
+                    throw new IllegalArgumentException("Недопустимый формат изображения");
+                }
+                user.setAvatar(ImageCropper.cropToSquare(avatar.getBytes(), 64, allowedTypes.get(avatar.getContentType())));
+            }
+            userRepository.save(user);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Ошибка загрузки изображения");
+        }
         return modelMapper.map(user, UserDto.class);
     }
 }

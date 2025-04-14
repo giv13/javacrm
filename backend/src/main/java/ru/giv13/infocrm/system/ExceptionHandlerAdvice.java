@@ -4,6 +4,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -35,6 +37,16 @@ public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     private Response<String> onHttpMessageNotReadableException(Exception exception) {
         return Response.er(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    private Response<String> onIllegalArgumentException(Exception exception) {
+        return Response.er(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    private Response<String> onMaxUploadSizeExceededException(Exception exception) {
+        return Response.er("Превышен максимально допустимый размер файла", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -60,6 +72,12 @@ public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(NoResourceFoundException.class)
     private Response<String> onNoResourceFoundException() {
         return Response.er("Ресурс не найден", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public Response<String> onObjectNotFoundException(Exception exception) {
+        String[] message = exception.getMessage().split(": ");
+        return Response.er("Объект не найден: " + message[1], HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

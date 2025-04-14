@@ -115,12 +115,10 @@ export const useUsers = (options?: {
       }
     },
 
-    async uploadAvatar(avatar: Blob) {
+    async uploadAvatar(user: User, avatar: string | Blob) {
       const formData = new FormData()
       formData.append('avatar', avatar)
-      formData.append('id', uuid())
-
-      return usersStore.uploadAvatar(formData)
+      return usersStore.uploadAvatar(user, formData)
     },
   }
 }

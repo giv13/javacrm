@@ -52,8 +52,11 @@ export const useUsersStore = defineStore('users', {
       }
     },
 
-    async uploadAvatar(formData: FormData) {
-      return uploadAvatar(formData)
+    async uploadAvatar(user: User, formData: FormData) {
+      const updatedUser = await uploadAvatar(user, formData)
+      const index = this.items.findIndex(({ id }) => id === user.id)
+      this.items.splice(index, 1, updatedUser)
+      return updatedUser
     },
   },
 })

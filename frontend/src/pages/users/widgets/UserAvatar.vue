@@ -19,17 +19,17 @@ defineProps({
   },
 })
 
-const isUrl = (avatar: string) => {
-  if (!avatar) return false
-
-  return avatar.startsWith('http') || avatar.startsWith('blob:')
+const avatarPath = (avatar: string) => {
+  if (!avatar) return ''
+  if (/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(avatar)) return 'data:image/jpeg;base64,' + avatar
+  return avatar
 }
 </script>
 
 <template>
   <VaAvatar
     :size="size"
-    :src="isUrl(user.avatar) ? user.avatar : ''"
+    :src="avatarPath(user.avatar)"
     :fallback-text="user.name[0]"
     :color="avatarColor(user.name)"
   />
