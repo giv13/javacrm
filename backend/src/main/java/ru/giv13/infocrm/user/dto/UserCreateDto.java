@@ -9,6 +9,6 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class UserCreateDto extends UserRegisterDto {
     private String notes;
-    private boolean isActive;
+    private boolean isActive = true;
     private Set<Integer> roles;
 }

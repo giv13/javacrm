@@ -1,5 +1,5 @@
 import { User } from '../../pages/users/types'
-import { api, get, post, patch, put } from '../../services/api'
+import { api, get, post, patch, put, del } from '../../services/api'
 
 export type Pagination = {
   page: number
@@ -47,7 +47,7 @@ export const updateUser = async (user: User, errors: Object) => {
 }
 
 export const removeUser = async (user: User) => {
-  return fetch(api.user(user.id), { method: 'DELETE' })
+  await del(api.user(user.id))
 }
 
 export const uploadAvatar = async (user: User, body: FormData) => {

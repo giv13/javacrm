@@ -3,6 +3,7 @@ package ru.giv13.infocrm.user;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +56,19 @@ public class UserService implements UserDetailsService {
         user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
         userRepository.save(user);
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "user"));
+        if (user.getRoles().stream().anyMatch(role -> role.getName().equals(ERole.ADMIN))) {
+            throw new IllegalArgumentException("Вы не можете удалить пользователя с правами администратора");
+        }
+        User principal = loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (Objects.equals(user.getId(), principal.getId())) {
+            throw new IllegalArgumentException("Вы не можете удалить самого себя");
+        }
+        userRepository.deleteById(id);
     }
 
     @Transactional

@@ -54,6 +54,10 @@ public class User implements UserDetails {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Project> projects;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "project_participant", joinColumns = @JoinColumn(name = "participant_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
+    private List<Project> participation;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().flatMap(role -> role.getAuthorities().stream()).collect(Collectors.toCollection(LinkedHashSet::new));

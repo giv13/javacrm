@@ -34,6 +34,10 @@ export const put = (url: string, data = {}, errors = {}) => {
   return request(url, 'PUT', data, errors)
 }
 
+export const del = (url: string) => {
+  return request(url, 'DELETE')
+}
+
 const request = async (url: string, method = 'GET', data = {}, errors: Record<string, string[]> = {}, isJson = true) => {
   const options: RequestInit = {
     method,

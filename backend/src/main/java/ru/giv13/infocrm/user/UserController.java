@@ -36,6 +36,12 @@ public class UserController {
         return userService.update(id, userUpdateDto);
     }
 
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasAuthority(T(ru.giv13.infocrm.user.EPermisson).USER_DELETE)")
+    public void delete(@PathVariable("id") Integer id) {
+        userService.delete(id);
+    }
+
     @PatchMapping(value = "{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @PreAuthorize("hasAnyAuthority(T(ru.giv13.infocrm.user.EPermisson).USER_CREATE, T(ru.giv13.infocrm.user.EPermisson).USER_UPDATE)")
     public UserDto uploadAvatar(@PathVariable("id") Integer id, @RequestParam(value = "avatar", required = false) MultipartFile avatar) {

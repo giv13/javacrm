@@ -44,12 +44,9 @@ export const useUsersStore = defineStore('users', {
     },
 
     async remove(user: User) {
-      const isRemoved = await removeUser(user)
-
-      if (isRemoved) {
-        const index = this.items.findIndex(({ id }) => id === user.id)
-        this.items.splice(index, 1)
-      }
+      await removeUser(user)
+      const index = this.items.findIndex(({ id }) => id === user.id)
+      this.items.splice(index, 1)
     },
 
     async uploadAvatar(user: User, formData: FormData) {

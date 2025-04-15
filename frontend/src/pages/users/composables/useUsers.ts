@@ -108,8 +108,6 @@ export const useUsers = (options?: {
       isLoading.value = true
       try {
         return await usersStore.remove(user)
-      } catch (e) {
-        error.value = e
       } finally {
         isLoading.value = false
       }
