@@ -1,5 +1,4 @@
 import { Ref, ref, unref, watch, computed } from 'vue'
-import { v4 as uuid } from 'uuid'
 import type { Filters, Pagination, Sorting } from '../../../data/pages/users'
 import { User } from '../types'
 import { useUsersStore } from '../../../stores/users'
@@ -89,7 +88,7 @@ export const useUsers = (options?: {
     async add(user: User, errors: Object) {
       isLoading.value = true
       try {
-        return await usersStore.add(user, errors)
+        return await usersStore.add(user, filters, errors)
       } finally {
         isLoading.value = false
       }
@@ -98,7 +97,7 @@ export const useUsers = (options?: {
     async update(user: User, errors: Object) {
       isLoading.value = true
       try {
-        return await usersStore.update(user, errors)
+        return await usersStore.update(user, filters, errors)
       } finally {
         isLoading.value = false
       }
@@ -116,7 +115,7 @@ export const useUsers = (options?: {
     async uploadAvatar(user: User, avatar: string | Blob) {
       const formData = new FormData()
       formData.append('avatar', avatar)
-      return usersStore.uploadAvatar(user, formData)
+      return usersStore.uploadAvatar(user, filters, formData)
     },
   }
 }

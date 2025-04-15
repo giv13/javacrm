@@ -1,3 +1,4 @@
+import { unref, Ref } from 'vue'
 import { defineStore } from 'pinia'
 import {
   addUser,
@@ -30,16 +31,15 @@ export const useUsersStore = defineStore('users', {
       this.pagination = pagination
     },
 
-    async add(user: User, errors: Object) {
+    async add(user: User, filters: Ref<Partial<Filters>>, errors: Object) {
       const newUser = await addUser(user, errors)
-      this.items.unshift(newUser)
+      await this.getAll({ filters: unref(filters) })
       return newUser
     },
 
-    async update(user: User, errors: Object) {
+    async update(user: User, filters: Ref<Partial<Filters>>, errors: Object) {
       const updatedUser = await updateUser(user, errors)
-      const index = this.items.findIndex(({ id }) => id === user.id)
-      this.items.splice(index, 1, updatedUser)
+      await this.getAll({ filters: unref(filters) })
       return updatedUser
     },
 
@@ -49,10 +49,9 @@ export const useUsersStore = defineStore('users', {
       this.items.splice(index, 1)
     },
 
-    async uploadAvatar(user: User, formData: FormData) {
+    async uploadAvatar(user: User, filters: Ref<Partial<Filters>>, formData: FormData) {
       const updatedUser = await uploadAvatar(user, formData)
-      const index = this.items.findIndex(({ id }) => id === user.id)
-      this.items.splice(index, 1, updatedUser)
+      await this.getAll({ filters: unref(filters) })
       return updatedUser
     },
   },
