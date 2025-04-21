@@ -9,7 +9,7 @@ import { useVModel } from '@vueuse/core'
 
 const columns = defineVaDataTableColumns([
   { label: 'Наименование', key: 'name', sortable: true },
-  { label: 'Ответственный', key: 'responsibleId', sortable: true },
+  { label: 'Ответственный', key: 'responsible', sortable: true },
   { label: 'Участники', key: 'participants', sortable: true },
   { label: 'Статус', key: 'status', sortable: true },
   { label: 'Дата создания', key: 'createdAt', sortable: true },
@@ -65,24 +65,24 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
           {{ rowData.name }}
         </div>
       </template>
-      <template #cell(responsibleId)="{ rowData }">
-        <div v-if="getUserById(rowData.responsibleId)" class="flex items-center gap-2 ellipsis max-w-[230px]">
-          <UserAvatar :user="getUserById(rowData.responsibleId)" size="small" />
-          {{ getUserById(rowData.responsibleId).name }}
+      <template #cell(responsible)="{ rowData }">
+        <div v-if="getUserById(rowData.responsible)" class="flex items-center gap-2 ellipsis max-w-[230px]">
+          <UserAvatar :user="getUserById(rowData.responsible)" size="small" />
+          {{ getUserById(rowData.responsible).name }}
         </div>
       </template>
-      <template #cell(participants)="{ rowData: project }">
-        <VaAvatarGroup size="small" :options="getParticipantsOptions(project.participants)" :max="5" />
+      <template #cell(participants)="{ rowData }">
+        <VaAvatarGroup size="small" :options="getParticipantsOptions(rowData.participants)" :max="5" />
       </template>
-      <template #cell(status)="{ rowData: project }">
-        <ProjectStatusBadge :status="project.status" />
-      </template>
-
-      <template #cell(createdAt)="{ rowData: project }">
-        {{ new Date(project.createdAt).toLocaleDateString() }}
+      <template #cell(status)="{ rowData }">
+        <ProjectStatusBadge :status="rowData.status" />
       </template>
 
-      <template #cell(actions)="{ rowData: project }">
+      <template #cell(createdAt)="{ rowData }">
+        {{ new Date(rowData.createdAt).toLocaleDateString() }}
+      </template>
+
+      <template #cell(actions)="{ rowData }">
         <div class="flex gap-2 justify-end">
           <VaButton
             preset="primary"
@@ -90,7 +90,7 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
             color="primary"
             icon="mso-edit"
             aria-label="Редактировать проект"
-            @click="$emit('edit', project as Project)"
+            @click="$emit('edit', rowData as Project)"
           />
           <VaButton
             preset="primary"
@@ -98,7 +98,7 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
             icon="mso-delete"
             color="danger"
             aria-label="Удалить проект"
-            @click="$emit('delete', project as Project)"
+            @click="$emit('delete', rowData as Project)"
           />
         </div>
       </template>

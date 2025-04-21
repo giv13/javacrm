@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import ru.giv13.infocrm.user.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -31,7 +31,7 @@ public class Project {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "project_participant", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "participant_id"))
-    private List<User> participants;
+    private Set<User> participants;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

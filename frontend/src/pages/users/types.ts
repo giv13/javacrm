@@ -21,5 +21,5 @@ export type User = {
 }
 
 export type EmptyUser = Omit<User, 'id' | 'roles' | 'projects'> & {
-  roles: number[]
+  roles: Role['id'][]
 }

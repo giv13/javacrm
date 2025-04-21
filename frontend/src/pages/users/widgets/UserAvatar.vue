@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
-import { type User } from '../types'
+import { EmptyUser } from '../types'
 
 const avatarColor = (userName: string) => {
   const colors = ['primary', '#FFD43A', '#ADFF00', '#262824', 'danger']
@@ -10,7 +10,7 @@ const avatarColor = (userName: string) => {
 
 defineProps({
   user: {
-    type: Object as PropType<User>,
+    type: Object as PropType<EmptyUser>,
     required: true,
   },
   size: {

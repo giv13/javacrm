@@ -11,12 +11,12 @@ export type Project = {
   name: string
   description: string
   status: Status
-  responsibleId: User['id']
+  responsible: User['id']
   participants: User['id'][]
   createdAt: string
 }
 
-export type EmptyProject = Omit<Project, 'id' | 'status' | 'responsibleId' | 'createdAt'> & {
-  status: Status | undefined
-  responsibleId: User['id'] | undefined
+export type EmptyProject = Omit<Project, 'id' | 'status' | 'responsible' | 'createdAt'> & {
+  status: Status['id'] | undefined
+  responsible: User['id'] | undefined
 }

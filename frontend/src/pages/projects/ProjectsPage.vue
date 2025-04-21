@@ -8,6 +8,9 @@ import EditProjectForm from './widgets/EditProjectForm.vue'
 import { Project } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 import { useProjectUsers } from './composables/useProjectUsers'
+import { useStatuses } from './composables/useStatuses'
+
+useStatuses()
 
 const doShowAsCards = useLocalStorage('projects-view', true)
 
@@ -36,21 +39,21 @@ const createNewProject = () => {
 
 const { init: notify } = useToast()
 
-const onProjectSaved = async (project: Project) => {
-  doShowProjectFormModal.value = false
+const onProjectSaved = async (project: Project, errors: Object, ok: Function) => {
   if (projectToEdit.value) {
-    await update(project as Project)
+    await update(project, errors)
     notify({
       message: `Проект ${project.name} обновлен`,
       color: 'success',
     })
   } else {
-    await add(project as Project)
+    await add(project, errors)
     notify({
       message: `Проект ${project.name} добавлен`,
       color: 'success',
     })
   }
+  ok()
 }
 
 const { confirm } = useModal()
@@ -149,9 +152,8 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
         :save-button-label="projectToEdit ? 'Сохранить' : 'Добавить'"
         @close="cancel"
         @save="
-          (project) => {
-            onProjectSaved(project)
-            ok()
+          (project, errors) => {
+            onProjectSaved(project, errors, ok)
           }
         "
       />

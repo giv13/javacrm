@@ -1,34 +1,37 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, reactive } from 'vue'
 import { EmptyProject, Project } from '../types'
-import { SelectOption } from 'vuestic-ui'
 import ProjectStatusBadge from '../components/ProjectStatusBadge.vue'
 import UserAvatar from '../../users/widgets/UserAvatar.vue'
 import { useUsersStore } from '../../../stores/users'
+import { useStatuses } from '../composables/useStatuses'
 
 const props = defineProps<{
   project: Project | null
   saveButtonLabel: string
 }>()
 
-defineEmits<{
-  (event: 'save', project: Project): void
-  (event: 'close'): void
-}>()
+const emit = defineEmits(['save', 'close'])
 
 const defaultNewProject: EmptyProject = {
   name: '',
   description: '',
   status: undefined,
-  responsibleId: undefined,
+  responsible: undefined,
   participants: [],
 }
+
+const formErrors = reactive({
+  name: [],
+  status: [],
+  responsible: []
+});
 
 const newProject = ref({ ...defaultNewProject })
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newProject.value).some((key) => {
-    if (key === 'participants') {
+    if (key === 'participants' || key === 'status') {
       return false
     }
 
@@ -44,6 +47,8 @@ defineExpose({
 
 const usersStore = useUsersStore()
 
+const { statuses } = useStatuses()
+
 watch(
   () => props.project,
   () => {
@@ -53,31 +58,39 @@ watch(
 
     newProject.value = {
       ...props.project,
-      responsibleId: props.project.responsibleId,
+      status: props.project.status.id,
     }
   },
   { immediate: true },
 )
-
-const required = (v: string | SelectOption) => !!v || 'Это поле обязательно для заполнения'
 
 const ownerFiltersSearch = ref('')
 const participantsFiltersSearch = ref('')
 </script>
 
 <template>
-  <VaForm v-slot="{ validate }" class="flex flex-col gap-2">
-    <VaInput v-model="newProject.name" label="Наименование" :rules="[required]" />
+  <VaForm v-slot="{ isValid, validate }" class="flex flex-col gap-2">
+    <VaInput
+      :error="formErrors.name.length > 0"
+      :errorMessages="formErrors.name"
+      @input="formErrors.name = []"
+      v-model="newProject.name"
+      label="Наименование"
+      name="name"
+    />
+    <VaTextarea v-model="newProject.description" label="Описание" name="description" />
     <VaSelect
-      v-model="newProject.responsibleId"
+      :error="formErrors.responsible.length > 0"
+      :errorMessages="formErrors.responsible"
+      @update:modelValue="formErrors.responsible = []"
+      v-model="newProject.responsible"
       v-model:search="ownerFiltersSearch"
       searchable
       label="Ответственный"
-      text-by="name"
-      track-by="id"
       value-by="id"
-      :rules="[required]"
+      text-by="name"
       :options="usersStore.items"
+      name="responsible"
     >
       <template #content="{ value: user }">
         <div v-if="user" :key="user.id" class="flex items-center gap-1 mr-4">
@@ -89,14 +102,14 @@ const participantsFiltersSearch = ref('')
     <VaSelect
       v-model="newProject.participants"
       v-model:search="participantsFiltersSearch"
+      searchable
       label="Участники"
-      text-by="name"
-      track-by="id"
       value-by="id"
+      text-by="name"
       multiple
-      :rules="[(v: any) => ('length' in v && v.length > 0) || 'Это поле обязательно для заполнения']"
       :options="usersStore.items"
-      :max-visible-options="$vaBreakpoint.mdUp ? 3 : 1"
+      :max-visible-options="3"
+      name="participants"
     >
       <template #content="{ valueArray }">
         <template v-if="valueArray?.length">
@@ -108,25 +121,23 @@ const participantsFiltersSearch = ref('')
       </template>
     </VaSelect>
     <VaSelect
+      :error="formErrors.status.length > 0"
+      :errorMessages="formErrors.status"
+      @update:modelValue="formErrors.status = []"
       v-model="newProject.status"
-      label="Status"
-      :rules="[required]"
-      track-by="value"
-      value-by="value"
-      :options="[
-        { text: 'In progress', value: 'in progress' },
-        { text: 'Archived', value: 'archived' },
-        { text: 'Completed', value: 'completed' },
-        { text: 'Important', value: 'important' },
-      ]"
+      label="Статус"
+      value-by="id"
+      text-by="displayName"
+      :options="statuses"
+      name="status"
     >
       <template #content="{ value }">
-        <ProjectStatusBadge v-if="value" :status="value.value" />
+        <ProjectStatusBadge v-if="value" :status="value" />
       </template>
     </VaSelect>
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
-      <VaButton preset="secondary" color="secondary" @click="$emit('close')">Отмена</VaButton>
-      <VaButton @click="validate() && $emit('save', newProject as Project)">{{ saveButtonLabel }}</VaButton>
+      <VaButton preset="secondary" color="secondary" @click="emit('close')">Отмена</VaButton>
+      <VaButton :disabled="!isValid" @click="validate() && emit('save', newProject, formErrors)">{{ saveButtonLabel }}</VaButton>
     </div>
   </VaForm>
 </template>

@@ -10,7 +10,7 @@ import { useProjectUsers } from '../../../projects/composables/useProjectUsers'
 const columns = defineVaDataTableColumns([
   { label: 'Наименование', key: 'name', sortable: true },
   { label: 'Статус', key: 'status', sortable: true },
-  { label: 'Ответственный', key: 'responsibleId', sortable: true },
+  { label: 'Ответственный', key: 'responsible', sortable: true },
   { label: 'Участники', key: 'participants', sortable: true },
 ])
 
@@ -45,14 +45,14 @@ const { getParticipantsOptions, getUserById } = useProjectUsers()
           <template #cell(status)="{ rowData }">
             <ProjectStatusBadge :status="rowData.status" />
           </template>
-          <template #cell(responsibleId)="{ rowData }">
+          <template #cell(responsible)="{ rowData }">
             <div class="flex items-center gap-2 ellipsis max-w-[230px]">
               <UserAvatar
-                v-if="getUserById(rowData.responsibleId)"
-                :user="getUserById(rowData.responsibleId)!"
+                v-if="getUserById(rowData.responsible)"
+                :user="getUserById(rowData.responsible)!"
                 size="small"
               />
-              {{ getUserById(rowData.responsibleId)?.name }}
+              {{ getUserById(rowData.responsible)?.name }}
             </div>
           </template>
           <template #cell(participants)="{ rowData }">

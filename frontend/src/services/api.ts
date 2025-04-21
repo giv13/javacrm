@@ -12,6 +12,7 @@ export const api = {
   user: (id: number) => `${apiBaseUrl}/users/${id}`,
   users: ({ page, pageSize }: { page: number; pageSize: number }) =>
     `${apiBaseUrl}/users/?page=${page}&pageSize=${pageSize}`,
+  allStatuses: () => `${apiBaseUrl}/statuses`,
   allProjects: () => `${apiBaseUrl}/projects`,
   project: (id: number) => `${apiBaseUrl}/projects/${id}`,
   projects: ({ page, pageSize }: { page: number; pageSize: number }) =>

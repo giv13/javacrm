@@ -14,9 +14,14 @@ public class ProjectDto {
     private String name;
     private String description;
     private Status status;
-    private Integer responsibleId;
+    private UserIdDto responsible;
     private List<UserIdDto> participants;
     private LocalDateTime createdAt;
+
+    public Integer getResponsible() {
+        if (responsible == null) return null;
+        return responsible.getId();
+    }
 
     public List<Integer> getParticipants() {
         if (participants == null) return new ArrayList<>();

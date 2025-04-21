@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {PropType, computed, ref, watch, reactive} from 'vue'
-import { useForm } from 'vuestic-ui'
+import { PropType, computed, ref, watch, reactive } from 'vue'
 import { User, EmptyUser } from '../types'
 import UserAvatar from './UserAvatar.vue'
 import { useRoles } from '../composables/useRoles'
@@ -82,19 +81,11 @@ watch(avatar, (newAvatar) => {
   newUser.value.avatar = newAvatar ? makeAvatarBlobUrl(newAvatar) : ''
 })
 
-const form = useForm('add-user-form')
-
-const emit = defineEmits(['close', 'save'])
-
-const onSave = () => {
-  if (form.validate()) {
-    emit('save', newUser.value, formErrors)
-  }
-}
+const emit = defineEmits(['save', 'close'])
 </script>
 
 <template>
-  <VaForm v-slot="{ isValid }" ref="add-user-form" class="flex-col justify-start items-start gap-4 inline-flex w-full">
+  <VaForm v-slot="{ isValid, validate }" ref="add-user-form" class="flex-col justify-start items-start gap-4 inline-flex w-full">
     <VaFileUpload
       v-model="avatar"
       type="single"
@@ -207,8 +198,8 @@ const onSave = () => {
 
       <VaTextarea v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
-        <VaButton preset="secondary" color="secondary" @click="$emit('close')">Отмена</VaButton>
-        <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
+        <VaButton preset="secondary" color="secondary" @click="emit('close')">Отмена</VaButton>
+        <VaButton :disabled="!isValid" @click="validate() && emit('save', newUser, formErrors)">{{ saveButtonLabel }}</VaButton>
       </div>
     </div>
   </VaForm>

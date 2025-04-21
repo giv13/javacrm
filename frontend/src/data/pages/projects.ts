@@ -1,5 +1,5 @@
 import { Project } from '../../pages/projects/types'
-import { api, get } from '../../services/api'
+import { api, get, post, put, del } from '../../services/api'
 
 export type Pagination = {
   page: number
@@ -8,7 +8,7 @@ export type Pagination = {
 }
 
 export type Sorting = {
-  sortBy: 'responsibleId' | 'participants' | 'createdAt'
+  sortBy: 'responsible' | 'participants' | 'createdAt'
   sortingOrder: 'asc' | 'desc' | null
 }
 
@@ -25,19 +25,14 @@ export const getProjects = async (options: Partial<Sorting> & Pagination) => {
   }
 }
 
-export const addProject = async (project: Omit<Project, 'id' | 'createdAt'>) => {
-  const headers = new Headers()
-  headers.append('Content-Type', 'application/json')
-
-  return fetch(api.allProjects(), { method: 'POST', body: JSON.stringify(project), headers }).then((r) => r.json())
+export const addProject = async (project: Omit<Project, 'id' | 'createdAt'>, errors: Object) => {
+  return post(api.allProjects(), project, errors)
 }
 
-export const updateProject = async (project: Omit<Project, 'createdAt'>) => {
-  const headers = new Headers()
-  headers.append('Content-Type', 'application/json')
-  return fetch(api.project(project.id), { method: 'PUT', body: JSON.stringify(project), headers }).then((r) => r.json())
+export const updateProject = async (project: Omit<Project, 'createdAt'>, errors: Object) => {
+  return put(api.project(project.id), project, errors)
 }
 
 export const removeProject = async (project: Project) => {
-  return fetch(api.project(project.id), { method: 'DELETE' })
+  return del(api.project(project.id))
 }

@@ -42,7 +42,7 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
           </h4>
           <p>
             <span class="text-[var(--va-secondary)]">Ответственный: </span>
-            <span v-if="getUserById(project.responsibleId)">{{ getUserById(project.responsibleId)!.name }}</span>
+            <span v-if="getUserById(project.responsible)">{{ getUserById(project.responsible)!.name }}</span>
           </p>
           <VaAvatarGroup class="my-4" :options="getParticipantsOptions(project.participants)" :max="5" />
           <ProjectStatusBadge :status="project.status" />

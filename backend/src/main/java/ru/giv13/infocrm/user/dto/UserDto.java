@@ -6,7 +6,6 @@ import ru.giv13.infocrm.user.Role;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class UserDto {
@@ -17,7 +16,7 @@ public class UserDto {
     private String notes;
     private byte[] avatar;
     private boolean isActive;
-    private Set<Role> roles;
+    private List<Role> roles;
     private List<ProjectIdDto> projects;
 
     public List<Integer> getProjects() {

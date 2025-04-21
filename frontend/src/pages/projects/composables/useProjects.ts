@@ -32,8 +32,8 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
     )
 
     const getSortItem = (obj: any, sortBy: Sorting['sortBy']) => {
-      if (sortBy === 'responsibleId') {
-        return getUserById(obj.responsibleId)?.name
+      if (sortBy === 'responsible') {
+        return getUserById(obj.responsible)?.name
       }
 
       if (sortBy === 'participants') {
@@ -74,25 +74,34 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
 
     fetch,
 
-    async add(project: Omit<Project, 'id' | 'createdAt'>) {
+    async add(project: Omit<Project, 'id' | 'createdAt'>, errors: Object) {
       isLoading.value = true
-      await projectsStore.add(project)
-      await fetch()
-      isLoading.value = false
+      try {
+        await projectsStore.add(project, errors)
+        await fetch()
+      } finally {
+        isLoading.value = false
+      }
     },
 
-    async update(project: Project) {
+    async update(project: Omit<Project, 'createdAt'>, errors: Object) {
       isLoading.value = true
-      await projectsStore.update(project)
-      await fetch()
-      isLoading.value = false
+      try {
+        await projectsStore.update(project, errors)
+        await fetch()
+      } finally {
+        isLoading.value = false
+      }
     },
 
     async remove(project: Project) {
       isLoading.value = true
-      await projectsStore.remove(project)
-      await fetch()
-      isLoading.value = false
+      try {
+        await projectsStore.remove(project)
+        await fetch()
+      } finally {
+        isLoading.value = false
+      }
     },
 
     pagination,

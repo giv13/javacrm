@@ -24,24 +24,21 @@ export const useProjectsStore = defineStore('projects', {
       this.pagination = pagination
     },
 
-    async add(project: Omit<Project, 'id' | 'createdAt'>) {
-      const [newProject] = await addProject(project)
+    async add(project: Omit<Project, 'id' | 'createdAt'>, errors: Object) {
+      const newProject = await addProject(project, errors)
       this.items.push(newProject)
     },
 
-    async update(project: Project) {
-      const [updatedProject] = await updateProject(project)
+    async update(project: Omit<Project, 'createdAt'>, errors: Object) {
+      const updatedProject = await updateProject(project, errors)
       const index = this.items.findIndex(({ id }) => id === project.id)
       this.items.splice(index, 1, updatedProject)
     },
 
     async remove(project: Project) {
-      const isRemoved = await removeProject(project)
-
-      if (isRemoved) {
-        const index = this.items.findIndex(({ id }) => id === project.id)
-        this.items.splice(index, 1)
-      }
+      await removeProject(project)
+      const index = this.items.findIndex(({ id }) => id === project.id)
+      this.items.splice(index, 1)
     },
   },
 })
