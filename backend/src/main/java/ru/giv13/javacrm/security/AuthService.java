@@ -33,15 +33,19 @@ public class AuthService {
         User user = modelMapper.map(userRegisterDto, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         roleRepository.findByName(ERole.USER).ifPresent(userRole -> user.setRoles(Set.of(userRole)));
-        userRepository.save(user);
-        jwtService.generateCookie(user);
-        return modelMapper.map(user, UserProfileDto.class);
+        return auth(user);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public UserProfileDto login(UserLoginDto userLoginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
         User user = (User) authentication.getPrincipal();
+        return auth(user);
+    }
+
+    private UserProfileDto auth(User user) {
+        user.setTokenExpired(false);
+        userRepository.save(user);
         jwtService.generateCookie(user);
         return modelMapper.map(user, UserProfileDto.class);
     }

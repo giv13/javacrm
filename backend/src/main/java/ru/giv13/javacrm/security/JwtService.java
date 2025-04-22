@@ -8,16 +8,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.giv13.javacrm.user.User;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -53,12 +50,9 @@ public class JwtService {
     }
 
     private String buildToken(User user, Duration expiration) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("auth", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
         return Jwts
                 .builder()
                 .subject(user.getUsername())
-                .claims(claims)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration.toMillis()))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
@@ -66,7 +60,7 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, User user) {
-        return extractUsername(token).equals(user.getUsername()) && !isTokenExpired(token);
+        return extractUsername(token).equals(user.getUsername()) && !user.isTokenExpired() && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

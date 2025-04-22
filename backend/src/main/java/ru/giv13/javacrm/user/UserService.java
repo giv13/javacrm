@@ -52,6 +52,15 @@ public class UserService implements UserDetailsService {
     public UserDto update(Integer id, UserUpdateDto userUpdateDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "user"));
         userUpdateDto.setId(null);
+        if (userUpdateDto.getPassword() != null) {
+            userUpdateDto.setPassword(passwordEncoder.encode(userUpdateDto.getPassword()));
+        }
+        if ((userUpdateDto.getUsername() != null && !userUpdateDto.getUsername().equals(user.getUsername())) ||
+                (userUpdateDto.getPassword() != null && !userUpdateDto.getPassword().equals(user.getPassword())) ||
+                userUpdateDto.isActive() != user.isActive()
+        ) {
+            user.setTokenExpired(true);
+        }
         modelMapper.map(userUpdateDto, user);
         user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
         userRepository.save(user);
