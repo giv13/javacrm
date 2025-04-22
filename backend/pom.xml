@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.giv13</groupId>
-    <artifactId>infocrm</artifactId>
+    <artifactId>javacrm</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>infocrm</name>
-    <description>infocrm</description>
+    <name>javacrm</name>
+    <description>javacrm</description>
     <url/>
     <licenses>
         <license/>

@@ -1,11 +1,11 @@
 spring:
   application:
-    name: infoCRM
+    name: javaCRM
 
   datasource:
-    url: jdbc:postgresql://localhost/infocrm
-    username: infocrm
-    password: infocrm
+    url: jdbc:postgresql://localhost/javacrm
+    username: javacrm
+    password: javacrm
 
   jackson:
     mapper:

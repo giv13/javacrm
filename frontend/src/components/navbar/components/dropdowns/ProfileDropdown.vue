@@ -5,7 +5,7 @@
         <VaButton preset="secondary" color="textPrimary">
           <span class="profile-dropdown__anchor min-w-max">
             <slot />
-            <VaAvatar :size="32" color="warning"> 😍 </VaAvatar>
+            <UserAvatar :user="useUserStore().user" size="small" />
           </span>
         </VaButton>
       </template>
@@ -41,6 +41,7 @@ import { useColors, useToast } from 'vuestic-ui'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../../../../stores/user-store'
 import { api, post } from '../../../../services/api'
+import UserAvatar from '../../../../../src/pages/users/widgets/UserAvatar.vue'
 
 const { colors, setHSLAColor } = useColors()
 const hoverColor = computed(() => setHSLAColor(colors.focus, { a: 0.1 }))
@@ -84,20 +85,9 @@ withDefaults(
   {
     options: () => [
       {
-        title: useUserStore().user.username,
+        title: useUserStore().user.name,
         separator: true,
-        list: [
-          {
-            name: 'profile',
-            to: 'preferences',
-            icon: 'mso-account_circle',
-          },
-          {
-            name: 'projects',
-            to: 'projects',
-            icon: 'mso-favorite',
-          },
-        ],
+        list: [],
       },
       {
         name: '',

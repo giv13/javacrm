@@ -34,12 +34,5 @@ export default {
         authorities: ['PROJECT_READ'],
       },
     },
-    {
-      name: 'preferences',
-      displayName: 'menu.preferences',
-      meta: {
-        icon: 'manage_accounts',
-      },
-    },
   ] as INavigationRoute[],
 }

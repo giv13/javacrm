@@ -40,7 +40,6 @@
     "dashboard": "Dashboard",
     "billing": "Billing",
     "login": "Login",
-    "preferences": "Account preferences",
     "payments": "Payments",
     "settings": "Application settings",
     "pricing-plans": "Pricing plans",
@@ -163,7 +162,7 @@
     "grow": "Tabs grow"
   },
   "helpAndSupport": "Help & support",
-  "aboutVuesticAdmin": "About infoCRM",
+  "aboutVuesticAdmin": "About javaCRM",
   "supportAndConsulting": "Support & Consulting",
   "search": {
     "placeholder": "Search..."

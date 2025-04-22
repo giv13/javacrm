@@ -40,7 +40,6 @@
     "dashboard": "Панель управления",
     "billing": "Биллинг",
     "login": "Вход",
-    "preferences": "Настройки аккаунта",
     "payments": "Платежи",
     "settings": "Настройки приложения",
     "pricing-plans": "Тарифные планы",
@@ -163,7 +162,7 @@
     "grow": "Расширяемые вкладки"
   },
   "helpAndSupport": "Помощь и поддержка",
-  "aboutVuesticAdmin": "О infoCRM",
+  "aboutVuesticAdmin": "О javaCRM",
   "supportAndConsulting": "Поддержка и консультации",
   "search": {
     "placeholder": "Поиск..."

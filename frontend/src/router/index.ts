@@ -18,11 +18,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/admin/dashboard/Dashboard.vue'),
       },
       {
-        name: 'preferences',
-        path: 'preferences',
-        component: () => import('../pages/preferences/Preferences.vue'),
-      },
-      {
         name: 'users',
         path: 'users',
         component: () => import('../pages/users/UsersPage.vue'),

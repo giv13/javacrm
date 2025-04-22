@@ -32,5 +32,6 @@ const avatarPath = (avatar: string) => {
     :src="avatarPath(user.avatar)"
     :fallback-text="user.name[0]"
     :color="avatarColor(user.name)"
+    :title="user.name"
   />
 </template>
