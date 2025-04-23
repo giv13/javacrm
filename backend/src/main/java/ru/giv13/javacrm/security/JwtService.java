@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +14,8 @@ import ru.giv13.javacrm.user.User;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
 @Service
@@ -26,30 +27,47 @@ public class JwtService {
     @Value("${security.jwt.expiration}")
     private Duration jwtExpiration;
     @Value("${security.jwt.token-name}")
-    private String tokenName;
+    private String jwtTokenName;
+    @Value("${security.jwt.refresh.expiration}")
+    private Duration jwtRefreshExpiration;
+    @Value("${security.jwt.refresh.token-name}")
+    private String jwtRefreshTokenName;
 
-    public void generateCookie(User user) {
-        String token = generateToken(user);
+    public String generateCookie(User user) {
+        generateCookie(user, jwtTokenName, jwtExpiration);
+        return generateCookie(user, jwtRefreshTokenName, jwtRefreshExpiration);
+    }
+
+    private String generateCookie(User user, String tokenName, Duration tokenExpiration) {
+        String token = generateToken(user, tokenExpiration);
         Cookie cookie = new Cookie(tokenName, token);
-        cookie.setMaxAge((int) jwtExpiration.toSeconds());
+        cookie.setMaxAge((int) tokenExpiration.toSeconds());
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
+        return token;
     }
 
     public void eraseCookie() {
-        Cookie cookie = new Cookie(tokenName, "");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        httpServletResponse.addCookie(cookie);
+        eraseCookie(jwtTokenName);
+        eraseCookie(jwtRefreshTokenName);
     }
 
-    private String generateToken(User user) {
-        return buildToken(user, jwtExpiration);
+    private void eraseCookie(String tokenName) {
+        Cookie refreshCookie = new Cookie(tokenName, "");
+        refreshCookie.setMaxAge(0);
+        refreshCookie.setPath("/");
+        httpServletResponse.addCookie(refreshCookie);
     }
 
-    private String buildToken(User user, Duration expiration) {
+    public String getCookie(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
+        return Arrays.stream(cookies).filter(c -> c.getName().equals(name)).findFirst().map(Cookie::getValue).orElse(null);
+    }
+
+    private String generateToken(User user, Duration expiration) {
         return Jwts
                 .builder()
                 .subject(user.getUsername())
@@ -60,7 +78,7 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, User user) {
-        return extractUsername(token).equals(user.getUsername()) && !user.isTokenExpired() && !isTokenExpired(token);
+        return extractUsername(token).equals(user.getUsername()) && user.getRefresh() != null && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
@@ -69,10 +87,6 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
-    }
-
-    public List<?> extractAuthorities(String token) {
-        return extractClaim(token, claims -> claims.get("auth", List.class));
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

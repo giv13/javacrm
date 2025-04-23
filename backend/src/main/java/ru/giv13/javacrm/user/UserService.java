@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
                 (userUpdateDto.getPassword() != null && !userUpdateDto.getPassword().equals(user.getPassword())) ||
                 userUpdateDto.isActive() != user.isActive()
         ) {
-            user.setTokenExpired(true);
+            user.setRefresh(null);
         }
         modelMapper.map(userUpdateDto, user);
         user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));

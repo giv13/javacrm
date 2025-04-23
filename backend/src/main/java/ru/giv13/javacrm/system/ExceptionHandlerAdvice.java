@@ -45,7 +45,7 @@ public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    private Response<String> onMaxUploadSizeExceededException(Exception exception) {
+    private Response<String> onMaxUploadSizeExceededException() {
         return Response.er("Превышен максимально допустимый размер файла", HttpStatus.BAD_REQUEST);
     }
 
@@ -61,7 +61,7 @@ public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
 
     @ExceptionHandler(JwtException.class)
     private Response<String> onJwtException(Exception exception) {
-        return Response.er("Просроченный или недействительный JWT", HttpStatus.UNAUTHORIZED);
+        return Response.er(exception.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)

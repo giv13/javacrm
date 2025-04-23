@@ -1,5 +1,6 @@
 package ru.giv13.javacrm.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,11 @@ public class AuthController {
     @PostMapping("login")
     public UserProfileDto login(@Valid @RequestBody UserLoginDto userLoginDto) {
         return authService.login(userLoginDto);
+    }
+
+    @PostMapping("refresh")
+    public void refresh(HttpServletRequest request) {
+        authService.refresh(request);
     }
 
     @PostMapping("logout")

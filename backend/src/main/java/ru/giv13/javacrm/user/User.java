@@ -45,8 +45,7 @@ public class User implements UserDetails {
     @ColumnDefault("true")
     private boolean isActive = true;
 
-    @ColumnDefault("true")
-    private boolean isTokenExpired = true;
+    private String refresh;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

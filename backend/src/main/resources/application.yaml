@@ -25,6 +25,9 @@ server:
 
 security:
   jwt:
-    expiration: 15m
     secret: 3d6f7f4db9a7ca65e6cbbd5c60a9b6f88e1e9b2a7b77b4a1e5e8e7f2c8e1e3d9
+    expiration: 15m
     token-name: token
+    refresh:
+      expiration: 30d
+      token-name: refresh
