@@ -16,14 +16,7 @@ export default {
       displayName: 'menu.dashboard',
       meta: {
         icon: 'vuestic-iconset-dashboard',
-      },
-    },
-    {
-      name: 'users',
-      displayName: 'menu.users',
-      meta: {
-        icon: 'group',
-        authorities: ['USER_READ'],
+        meta: { authorities: ['PROJECT_READ', 'USER_READ'] },
       },
     },
     {
@@ -32,6 +25,14 @@ export default {
       meta: {
         icon: 'folder_shared',
         authorities: ['PROJECT_READ'],
+      },
+    },
+    {
+      name: 'users',
+      displayName: 'menu.users',
+      meta: {
+        icon: 'group',
+        authorities: ['USER_READ'],
       },
     },
   ] as INavigationRoute[],

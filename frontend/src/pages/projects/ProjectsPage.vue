@@ -9,7 +9,9 @@ import { Project } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 import { useProjectUsers } from './composables/useProjectUsers'
 import { useStatuses } from './composables/useStatuses'
+import { useUserStore } from '../../stores/user-store'
 
+const userStore = useUserStore()
 useStatuses()
 
 const doShowAsCards = useLocalStorage('projects-view', true)
@@ -113,7 +115,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             ]"
           />
         </div>
-        <VaButton icon="add" @click="createNewProject">Добавить проект</VaButton>
+        <VaButton icon="add" @click="createNewProject" v-show="userStore.hasAuthorities(['PROJECT_CREATE'])">Добавить проект</VaButton>
       </div>
 
       <ProjectCards

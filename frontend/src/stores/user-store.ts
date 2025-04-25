@@ -19,5 +19,8 @@ export const useUserStore = defineStore('user', {
       this.user = null;
       localStorage.removeItem('user');
     },
+    hasAuthorities(authorities: string[]): boolean {
+      return !Array.isArray(authorities) || authorities.length == 0 || authorities.some(r => this.user.authorities.includes(r));
+    }
   },
 })

@@ -6,8 +6,10 @@ import { User } from './types'
 import { useUsers } from './composables/useUsers'
 import { useModal, useToast } from 'vuestic-ui'
 import { useProjects } from '../projects/composables/useProjects'
+import { useUserStore } from '../../stores/user-store'
 import { useUsersStore } from '../../stores/users'
 
+const userStore = useUserStore()
 const usersStore = useUsersStore()
 
 const doShowEditUserModal = ref(false)
@@ -114,7 +116,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             </template>
           </VaInput>
         </div>
-        <VaButton @click="showAddUserModal">Добавить пользователя</VaButton>
+        <VaButton @click="showAddUserModal" v-show="userStore.hasAuthorities(['USER_CREATE'])">Добавить пользователя</VaButton>
       </div>
 
       <UsersTable

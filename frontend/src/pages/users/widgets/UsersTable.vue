@@ -6,15 +6,19 @@ import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/pages/users'
 import { useVModel } from '@vueuse/core'
 import { Project } from '../../projects/types'
+import { useUserStore } from '../../../stores/user-store'
 
+const userStore = useUserStore()
 const columns = defineVaDataTableColumns([
   { label: 'Имя', key: 'name', sortable: true },
   { label: 'Имя пользователя', key: 'username', sortable: true },
   { label: 'E-mail', key: 'email', sortable: true },
   { label: 'Роли', key: 'roles', sortable: true },
   { label: 'Проекты', key: 'projects', sortable: true },
-  { label: ' ', key: 'actions', align: 'right' },
 ])
+if (userStore.hasAuthorities(['USER_UPDATE', 'USER_DELETE'])) {
+  columns.push({ label: ' ', key: 'actions', align: 'right' })
+}
 
 const props = defineProps({
   users: {
@@ -139,6 +143,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
           icon="mso-edit"
           aria-label="Редактировать пользователя"
           @click="$emit('edit-user', rowData as User)"
+          v-show="userStore.hasAuthorities(['USER_UPDATE'])"
         />
         <VaButton
           preset="primary"
@@ -147,6 +152,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
           color="danger"
           aria-label="Удалить пользователя"
           @click="onUserDelete(rowData as User)"
+          v-show="userStore.hasAuthorities(['USER_DELETE'])"
         />
       </div>
     </template>

@@ -6,15 +6,19 @@ import UserAvatar from '../../users/widgets/UserAvatar.vue'
 import ProjectStatusBadge from '../components/ProjectStatusBadge.vue'
 import { Pagination, Sorting } from '../../../data/pages/projects'
 import { useVModel } from '@vueuse/core'
+import { useUserStore } from '../../../stores/user-store'
 
+const userStore = useUserStore()
 const columns = defineVaDataTableColumns([
   { label: 'Наименование', key: 'name', sortable: true },
   { label: 'Ответственный', key: 'responsible', sortable: true },
   { label: 'Участники', key: 'participants', sortable: true },
   { label: 'Статус', key: 'status', sortable: true },
   { label: 'Дата создания', key: 'createdAt', sortable: true },
-  { label: ' ', key: 'actions' },
 ])
+if (userStore.hasAuthorities(['PROJECT_UPDATE', 'PROJECT_DELETE'])) {
+  columns.push({ label: ' ', key: 'actions', align: 'right' })
+}
 
 const props = defineProps({
   projects: {
@@ -91,6 +95,7 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
             icon="mso-edit"
             aria-label="Редактировать проект"
             @click="$emit('edit', rowData as Project)"
+            v-show="userStore.hasAuthorities(['PROJECT_UPDATE'])"
           />
           <VaButton
             preset="primary"
@@ -99,6 +104,7 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
             color="danger"
             aria-label="Удалить проект"
             @click="$emit('delete', rowData as Project)"
+            v-show="userStore.hasAuthorities(['PROJECT_DELETE'])"
           />
         </div>
       </template>

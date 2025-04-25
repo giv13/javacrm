@@ -30,6 +30,7 @@ public class UserService implements UserDetailsService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException("Пользователь " + username + " не найден"));
     }
@@ -55,14 +56,9 @@ public class UserService implements UserDetailsService {
         if (userUpdateDto.getPassword() != null) {
             userUpdateDto.setPassword(passwordEncoder.encode(userUpdateDto.getPassword()));
         }
-        if ((userUpdateDto.getUsername() != null && !userUpdateDto.getUsername().equals(user.getUsername())) ||
-                (userUpdateDto.getPassword() != null && !userUpdateDto.getPassword().equals(user.getPassword())) ||
-                userUpdateDto.isActive() != user.isActive()
-        ) {
-            user.setRefresh(null);
-        }
         modelMapper.map(userUpdateDto, user);
         user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
+        user.setRefresh(null);
         userRepository.save(user);
         return modelMapper.map(user, UserDto.class);
     }

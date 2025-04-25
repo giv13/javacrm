@@ -2,7 +2,7 @@
   <VaSidebar v-model="writableVisible" :width="sidebarWidth" :color="color" minimized-width="0">
     <VaAccordion v-model="value" multiple>
       <template v-for="(route, index) in navigationRoutes.routes" :key="index">
-        <VaCollapse v-if="!route.meta || !route.meta.authorities || (Array.isArray(route.meta.authorities) && route.meta.authorities.some(r => user.authorities.includes(r)))">
+        <VaCollapse v-if="user.hasAuthorities(route.meta.authorities as string[])">
           <template #header="{ value: isCollapsed }">
             <VaSidebarItem
               :to="route.children ? undefined : { name: route.name }"
@@ -30,7 +30,7 @@
           </template>
           <template #body>
             <template v-for="(childRoute, index2) in route.children" :key="index2">
-              <div v-if="!childRoute.meta || !childRoute.meta.authorities || (Array.isArray(childRoute.meta.authorities) && childRoute.meta.authorities.some(r => user.authorities.includes(r)))">
+              <div v-if="user.hasAuthorities(childRoute.meta.authorities as string[])">
                 <VaSidebarItem
                   :to="{ name: childRoute.name }"
                   :active="isActiveChildRoute(childRoute)"
@@ -103,7 +103,7 @@ export default defineComponent({
     const iconColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'secondary')
     const textColor = (route: INavigationRoute) => (routeHasActiveChild(route) ? 'primary' : 'textPrimary')
     const arrowDirection = (state: boolean) => (state ? 'va-arrow-up' : 'va-arrow-down')
-    const { user } = useUserStore()
+    const user = useUserStore()
 
     watch(() => route.fullPath, setActiveExpand, { immediate: true })
 
