@@ -15,12 +15,15 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -34,6 +37,12 @@ import java.util.regex.Pattern;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private final String[] excludedPaths = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     private Response<String> onHttpMessageNotReadableException(Exception exception) {
         return Response.er(exception.getMessage(), HttpStatus.BAD_REQUEST);
@@ -112,6 +121,16 @@ public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(@NonNull MethodParameter returnType, @NonNull Class converterType) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return false;
+        }
+        String requestUri = attributes.getRequest().getRequestURI();
+        for (String pattern : excludedPaths) {
+            if (pathMatcher.match(pattern, requestUri)) {
+                return false;
+            }
+        }
         return true;
     }
 
