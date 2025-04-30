@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.giv13.javacrm.project.dto.ProjectDto;
-import ru.giv13.javacrm.project.dto.ProjectRequestDto;
+import ru.giv13.javacrm.project.dto.ProjectCreateDto;
+import ru.giv13.javacrm.project.dto.ProjectUpdateDto;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class ProjectController {
     @PostMapping
     @PreAuthorize("hasAuthority(T(ru.giv13.javacrm.user.EPermisson).PROJECT_CREATE)")
     @Operation(summary = "Создать проект", description = "Необходимые права: PROJECT_CREATE")
-    public ProjectDto create(@Valid @RequestBody ProjectRequestDto projectRequestDto) {
-        return projectService.create(projectRequestDto);
+    public ProjectDto create(@Valid @RequestBody ProjectCreateDto projectCreateDto) {
+        return projectService.create(projectCreateDto);
     }
 
     @PutMapping("{id}")
@@ -38,9 +39,9 @@ public class ProjectController {
     @Operation(summary = "Обновить проект", description = "Необходимые права: PROJECT_UPDATE")
     public ProjectDto update(
             @PathVariable("id") Integer id,
-            @Valid @RequestBody @Parameter(description = "Идентификатор проекта") ProjectRequestDto projectRequestDto
+            @Valid @RequestBody @Parameter(description = "Идентификатор проекта") ProjectUpdateDto projectUpdateDto
     ) {
-        return projectService.update(id, projectRequestDto);
+        return projectService.update(id, projectUpdateDto);
     }
 
     @DeleteMapping("{id}")

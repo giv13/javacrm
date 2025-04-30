@@ -44,10 +44,15 @@ public class ProjectService {
     }
 
     private ProjectDto save(Project project, ProjectRequestDto projectRequestDto) {
-        project.setStatus(statusRepository.findById(projectRequestDto.getStatus()).orElse(null));
-        project.setResponsible(userRepository.findById(projectRequestDto.getResponsible()).orElse(null));
-        project.setParticipants(new HashSet<>(userRepository.findAllById(projectRequestDto.getParticipants())));
-        projectRepository.save(project);
-        return modelMapper.map(project, ProjectDto.class);
+        if (projectRequestDto.getStatus() != null) {
+            project.setStatus(statusRepository.findById(projectRequestDto.getStatus()).orElse(null));
+        }
+        if (projectRequestDto.getResponsible() != null) {
+            project.setResponsible(userRepository.findById(projectRequestDto.getResponsible()).orElse(null));
+        }
+        if (projectRequestDto.getParticipants() != null) {
+            project.setParticipants(new HashSet<>(userRepository.findAllById(projectRequestDto.getParticipants())));
+        }
+        return modelMapper.map(projectRepository.save(project), ProjectDto.class);
     }
 }
