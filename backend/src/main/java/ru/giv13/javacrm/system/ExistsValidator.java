@@ -3,10 +3,13 @@ package ru.giv13.javacrm.system;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.HandlerMapping;
 import ru.giv13.javacrm.user.UserRepository;
 import ru.giv13.javacrm.user.dto.ExistsCheckable;
 
-import java.util.Optional;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class ExistsValidator implements ConstraintValidator<Exists, ExistsCheckable> {
@@ -15,7 +18,15 @@ public class ExistsValidator implements ConstraintValidator<Exists, ExistsChecka
     @Override
     public boolean isValid(ExistsCheckable existsCheckable, ConstraintValidatorContext context) {
         boolean isExists = false;
-        int id = Optional.ofNullable(existsCheckable.getId()).orElse(0);
+        int id = 0;
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            Map<?, ?> uriAttributes = (Map<?, ?>) attributes.getRequest().getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+            if (uriAttributes.containsKey("id")) {
+                id = Integer.parseInt((String) uriAttributes.get("id"));
+            }
+        }
+
         if (existsCheckable.getUsername() != null && userRepository.existsByUsernameAndIdNot(existsCheckable.getUsername(), id)) {
             context.buildConstraintViolationWithTemplate("Имя пользователя уже занято")
                     .addPropertyNode("username")

@@ -45,30 +45,24 @@ public class UserService implements UserDetailsService {
         User user = modelMapper.map(userCreateDto, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(new HashSet<>(roleRepository.findAllById(userCreateDto.getRoles())));
-        userRepository.save(user);
-        return modelMapper.map(user, UserDto.class);
+        return modelMapper.map(userRepository.save(user), UserDto.class);
     }
 
     @Transactional
     public UserDto update(Integer id, UserUpdateDto userUpdateDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "user"));
-        userUpdateDto.setId(null);
         if (userUpdateDto.getPassword() != null) {
             userUpdateDto.setPassword(passwordEncoder.encode(userUpdateDto.getPassword()));
         }
         modelMapper.map(userUpdateDto, user);
         user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
         user.setRefresh(null);
-        userRepository.save(user);
-        return modelMapper.map(user, UserDto.class);
+        return modelMapper.map(userRepository.save(user), UserDto.class);
     }
 
     @Transactional
     public void delete(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "user"));
-        if (user.getRoles().stream().anyMatch(role -> role.getName().equals(ERole.ADMIN))) {
-            throw new IllegalArgumentException("Вы не можете удалить пользователя с правами администратора");
-        }
         User principal = loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         if (Objects.equals(user.getId(), principal.getId())) {
             throw new IllegalArgumentException("Вы не можете удалить самого себя");
@@ -89,10 +83,9 @@ public class UserService implements UserDetailsService {
                 }
                 user.setAvatar(ImageCropper.cropToSquare(avatar.getBytes(), 64, allowedTypes.get(avatar.getContentType())));
             }
-            userRepository.save(user);
         } catch (IOException e) {
             throw new IllegalArgumentException("Ошибка загрузки изображения");
         }
-        return modelMapper.map(user, UserDto.class);
+        return modelMapper.map(userRepository.save(user), UserDto.class);
     }
 }

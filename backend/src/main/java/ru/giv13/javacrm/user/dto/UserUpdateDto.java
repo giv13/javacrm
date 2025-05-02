@@ -2,7 +2,6 @@ package ru.giv13.javacrm.user.dto;
 
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import ru.giv13.javacrm.security.Password;
@@ -20,9 +19,6 @@ public class UserUpdateDto implements PasswordConfirmable, ExistsCheckable {
     public interface FirstGroup {}
     public interface SecondGroup {}
     public interface ThirdGroup {}
-
-    @NotNull
-    private Integer id;
 
     @NullOrNotBlank(groups = FirstGroup.class)
     private String name;
@@ -44,7 +40,7 @@ public class UserUpdateDto implements PasswordConfirmable, ExistsCheckable {
 
     private String notes;
 
-    private boolean isActive;
+    private Boolean isActive;
 
     private Set<Integer> roles;
 }
