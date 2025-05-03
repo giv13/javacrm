@@ -48,8 +48,7 @@ public class AuthService {
 
     private UserProfileDto auth(User user) {
         user.setRefresh(jwtService.generateCookie(user));
-        userRepository.save(user);
-        return modelMapper.map(user, UserProfileDto.class);
+        return modelMapper.map(userRepository.save(user), UserProfileDto.class);
     }
 
     public void refresh(HttpServletRequest request) throws JwtException {

@@ -39,7 +39,9 @@ public class Role {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + getName().name()));
-        authorities.addAll(permissions.stream().map(permission -> new SimpleGrantedAuthority(permission.getName().name())).toList());
+        if (permissions != null) {
+            authorities.addAll(permissions.stream().map(permission -> new SimpleGrantedAuthority(permission.getName().name())).toList());
+        }
         return authorities;
     }
 }
