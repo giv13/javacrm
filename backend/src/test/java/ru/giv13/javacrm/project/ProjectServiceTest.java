@@ -199,7 +199,7 @@ class ProjectServiceTest {
     }
 
     @Test
-    void testUpdateNotFound() {
+    void testUpdateNotFoundError() {
         // Given
         given(projectRepository.findById(id)).willReturn(Optional.empty());
 
@@ -229,7 +229,7 @@ class ProjectServiceTest {
     }
 
     @Test
-    void testDeleteNotFound() {
+    void testDeleteNotFoundError() {
         // Given
         given(projectRepository.findById(id)).willReturn(Optional.empty());
 

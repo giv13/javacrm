@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.multipart.MultipartFile;
 import ru.giv13.javacrm.user.dto.UserCreateDto;
 import ru.giv13.javacrm.user.dto.UserDto;
 import ru.giv13.javacrm.user.dto.UserUpdateDto;
@@ -168,7 +167,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateNotFound() {
+    void testUpdateNotFoundError() {
         // Given
         given(userRepository.findById(id)).willReturn(Optional.empty());
 
@@ -227,7 +226,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testDeleteNotFound() {
+    void testDeleteNotFoundError() {
         // Given
         given(userRepository.findById(id)).willReturn(Optional.empty());
 
@@ -248,7 +247,7 @@ class UserServiceTest {
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
-        MultipartFile avatar = new MockMultipartFile("test.png", "test.png", MediaType.IMAGE_PNG_VALUE, baos.toByteArray());
+        MockMultipartFile avatar = new MockMultipartFile("avatar", "test.png", MediaType.IMAGE_PNG_VALUE, baos.toByteArray());
 
         User updatedUser = new User();
         modelMapper.map(user, updatedUser);
@@ -268,9 +267,9 @@ class UserServiceTest {
     }
 
     @Test
-    void testUploadAvatarIllegalFormat() throws IOException {
+    void testUploadAvatarIllegalFormatError() throws IOException {
         // Given
-        MultipartFile avatar = new MockMultipartFile("test.txt", "test.txt", MediaType.TEXT_PLAIN_VALUE, "test".getBytes());
+        MockMultipartFile avatar = new MockMultipartFile("avatar", "test.txt", MediaType.TEXT_PLAIN_VALUE, "test".getBytes());
 
         given(userRepository.findById(id)).willReturn(Optional.of(user));
 
@@ -283,9 +282,9 @@ class UserServiceTest {
     }
 
     @Test
-    void testUploadAvatarNotFound() {
+    void testUploadAvatarNotFoundError() {
         // Given
-        MultipartFile avatar = new MockMultipartFile("test.txt", "test.txt", MediaType.TEXT_PLAIN_VALUE, "test".getBytes());
+        MockMultipartFile avatar = new MockMultipartFile("avatar", "test.txt", MediaType.TEXT_PLAIN_VALUE, "test".getBytes());
 
         given(userRepository.findById(id)).willReturn(Optional.empty());
 

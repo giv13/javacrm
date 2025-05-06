@@ -2,7 +2,7 @@ package ru.giv13.javacrm.system;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
@@ -11,9 +11,9 @@ import ru.giv13.javacrm.user.dto.ExistsCheckable;
 
 import java.util.Map;
 
-@RequiredArgsConstructor
 public class ExistsValidator implements ConstraintValidator<Exists, ExistsCheckable> {
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public boolean isValid(ExistsCheckable existsCheckable, ConstraintValidatorContext context) {
@@ -27,14 +27,14 @@ public class ExistsValidator implements ConstraintValidator<Exists, ExistsChecka
             }
         }
 
-        if (existsCheckable.getUsername() != null && userRepository.existsByUsernameAndIdNot(existsCheckable.getUsername(), id)) {
+        if (existsCheckable.getUsername() != null && userRepository != null && userRepository.existsByUsernameAndIdNot(existsCheckable.getUsername(), id)) {
             context.buildConstraintViolationWithTemplate("Имя пользователя уже занято")
                     .addPropertyNode("username")
                     .addConstraintViolation()
                     .disableDefaultConstraintViolation();
             isExists = true;
         }
-        if (existsCheckable.getEmail() != null && userRepository.existsByEmailAndIdNot(existsCheckable.getEmail(), id)) {
+        if (existsCheckable.getEmail() != null && userRepository != null && userRepository.existsByEmailAndIdNot(existsCheckable.getEmail(), id)) {
             context.buildConstraintViolationWithTemplate("E-mail уже занят")
                     .addPropertyNode("email")
                     .addConstraintViolation()

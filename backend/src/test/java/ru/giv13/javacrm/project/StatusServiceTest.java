@@ -24,14 +24,8 @@ class StatusServiceTest {
     void testGetAllSuccess() {
         // Given
         List<Status> statuses = List.of(
-                new Status()
-                        .setId(1)
-                        .setName(EStatus.NEW)
-                        .setDisplayName("Новый"),
-                new Status()
-                        .setId(2)
-                        .setName(EStatus.IN_PROGRESS)
-                        .setDisplayName("В работе")
+                new Status().setId(1).setName(EStatus.NEW).setDisplayName("Новый"),
+                new Status().setId(2).setName(EStatus.IN_PROGRESS).setDisplayName("В работе")
         );
 
         given(statusRepository.findAll()).willReturn(statuses);

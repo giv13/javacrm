@@ -24,14 +24,8 @@ class RoleServiceTest {
     void testGetAllSuccess() {
         // Given
         List<Role> roles = List.of(
-                new Role()
-                        .setId(1)
-                        .setName(ERole.USER)
-                        .setDisplayName("Пользователь"),
-                new Role()
-                        .setId(2)
-                        .setName(ERole.ADMIN)
-                        .setDisplayName("Администратор")
+                new Role().setId(1).setName(ERole.USER).setDisplayName("Пользователь"),
+                new Role().setId(2).setName(ERole.ADMIN).setDisplayName("Администратор")
         );
 
         given(roleRepository.findAll()).willReturn(roles);
