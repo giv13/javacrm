@@ -1,0 +1,9 @@
+id,name,display_name
+1,"USER_READ","Пользователи:чтение"
+2,"USER_CREATE","Пользователи:создание"
+3,"USER_UPDATE","Пользователи:обновление"
+4,"USER_DELETE","Пользователи:удаление"
+5,"PROJECT_READ","Проекты:чтение"
+6,"PROJECT_CREATE","Проекты:создание"
+7,"PROJECT_UPDATE","Проекты:обновление"
+8,"PROJECT_DELETE","Проекты:удаление"

@@ -14,7 +14,7 @@ import java.util.Set;
 @Accessors(chain = true)
 public class Project {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 25)

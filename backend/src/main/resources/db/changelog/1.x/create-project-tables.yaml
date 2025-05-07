@@ -1,0 +1,80 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-project-tables
+      author: giv13
+      changes:
+        - createTable:
+            tableName: status
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+              - column:
+                  name: display_name
+                  type: varchar(25)
+        - createTable:
+            tableName: project
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(25)
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: status_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: project_status_id_foreign
+                    referencedTableName: status
+                    referencedColumnNames: id
+              - column:
+                  name: responsible_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: project_responsible_id_foreign
+                    referencedTableName: user
+                    referencedColumnNames: id
+              - column:
+                  name: created_at
+                  type: timestamp
+        - createTable:
+            tableName: project_participant
+            columns:
+              - column:
+                  name: project_id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: project_participant_project_id_foreign
+                    referencedTableName: project
+                    referencedColumnNames: id
+              - column:
+                  name: participant_id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: project_participant_participant_id_foreign
+                    referencedTableName: user
+                    referencedColumnNames: id
+      rollback:
+        - dropTable:
+            tableName: project_participant
+        - dropTable:
+            tableName: project
+        - dropTable:
+            tableName: status

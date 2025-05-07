@@ -19,7 +19,7 @@ import java.util.Set;
 @Accessors(chain = true)
 public class Role {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)

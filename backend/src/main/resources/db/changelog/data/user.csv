@@ -1,0 +1,5 @@
+id,name,username,email,password,notes,avatar,is_active,refresh
+1,"Админ","admin","admin@mail.ru","$2a$10$ddFbRJonv3SWZZh3VsJsLu0rdszfXr7Q0WMSHq0bPUfEIm9U8gf/e",,null,true,
+2,"Юзер 1","user1","user1@mail.ru","$2a$10$5tw8qQSMeUW/7vIgdGvBmOKPT5Y.WkAQL.C/z3S0d/T2Kyg2xG1r2",,null,true,
+3,"Юзер 2","user2","user2@mail.ru","$2a$10$5tw8qQSMeUW/7vIgdGvBmOKPT5Y.WkAQL.C/z3S0d/T2Kyg2xG1r2",,null,true,
+4,"Юзер 3","user3","user3@mail.ru","$2a$10$5tw8qQSMeUW/7vIgdGvBmOKPT5Y.WkAQL.C/z3S0d/T2Kyg2xG1r2",,null,true,

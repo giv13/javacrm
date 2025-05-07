@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: load-initial-data
+      author: giv13
+      changes:
+        - loadData:
+            tableName: user
+            file: db/changelog/data/user.csv
+        - loadData:
+            tableName: permission
+            file: db/changelog/data/permission.csv
+        - loadData:
+            tableName: role
+            file: db/changelog/data/role.csv
+        - loadData:
+            tableName: role_permission
+            file: db/changelog/data/role_permission.csv
+        - loadData:
+            tableName: user_role
+            file: db/changelog/data/user_role.csv
+        - loadData:
+            tableName: status
+            file: db/changelog/data/status.csv
+        - loadData:
+            tableName: project
+            file: db/changelog/data/project.csv
+        - loadData:
+            tableName: project_participant
+            file: db/changelog/data/project_participant.csv
+      rollback:
+        - sql:
+            sql: "START TRANSACTION"
+        - sql:
+            sql: "TRUNCATE TABLE project_participant"
+        - sql:
+            sql: "TRUNCATE TABLE project"
+        - sql:
+            sql: "TRUNCATE TABLE status"
+        - sql:
+            sql: "TRUNCATE TABLE user_role"
+        - sql:
+            sql: "TRUNCATE TABLE role_permission"
+        - sql:
+            sql: "TRUNCATE TABLE role"
+        - sql:
+            sql: "TRUNCATE TABLE permission"
+        - sql:
+            sql: "TRUNCATE TABLE user"
+        - sql:
+            sql: "COMMIT"
