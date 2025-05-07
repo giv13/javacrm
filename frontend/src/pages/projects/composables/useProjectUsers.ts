@@ -1,8 +1,12 @@
 import { useUsers } from '../../users/composables/useUsers'
 import { Project } from '../types'
+import { ref } from "vue";
+import type { Filters } from "../../../data/pages/users";
 
 export function useProjectUsers() {
-  const { users } = useUsers()
+  const { users } = useUsers({
+    filters: ref<Partial<Filters>>({ isActive: undefined })
+  })
 
   const getUserById = (userId: number) => {
     return users.value.find(({ id }) => userId === id)

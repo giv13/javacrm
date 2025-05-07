@@ -21,7 +21,7 @@ export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>)
   const { isActive, search } = filters
   let filteredUsers: User[] = await get(api.allUsers());
 
-  filteredUsers = filteredUsers.filter((user) => user.active === isActive)
+  filteredUsers = filteredUsers.filter((user) => isActive === undefined || user.active === isActive)
 
   if (search) {
     filteredUsers = filteredUsers.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()) || user.username.toLowerCase().includes(search.toLowerCase()))

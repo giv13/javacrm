@@ -15,7 +15,7 @@ public class UserDto {
     private String email;
     private String notes;
     private byte[] avatar;
-    private boolean isActive;
+    private boolean active;
     private List<Role> roles;
     private List<ProjectIdDto> projects;
 

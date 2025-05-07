@@ -40,7 +40,7 @@ public class UserUpdateDto implements PasswordConfirmable, ExistsCheckable {
 
     private String notes;
 
-    private Boolean isActive;
+    private Boolean active;
 
     private Set<Integer> roles;
 }

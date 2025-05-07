@@ -5,7 +5,7 @@ import EditUserForm from './widgets/EditUserForm.vue'
 import { User } from './types'
 import { useUsers } from './composables/useUsers'
 import { useModal, useToast } from 'vuestic-ui'
-import { useProjects } from '../projects/composables/useProjects'
+import { useProjectsStore } from "../../stores/projects";
 import { useUserStore } from '../../stores/user-store'
 import { useUsersStore } from '../../stores/users'
 
@@ -15,7 +15,7 @@ const usersStore = useUsersStore()
 const doShowEditUserModal = ref(false)
 
 const { users, isLoading, filters, sorting, pagination, error, ...usersApi } = useUsers()
-const { projects } = useProjects()
+const projects = useProjectsStore().items
 
 const userToEdit = ref<User | null>(null)
 
