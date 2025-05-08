@@ -2,6 +2,7 @@ package ru.giv13.javacrm.user;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
@@ -49,6 +50,7 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @EqualsAndHashCode.Exclude
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY)

@@ -1,5 +1,5 @@
-id,name,display_name
-1,"NEW","Новый"
-2,"IN_PROGRESS","В работе"
-3,"COMPLETED","Завершенный"
-4,"ARCHIVED","Архивный"
+name,display_name
+"NEW","Новый"
+"IN_PROGRESS","В работе"
+"COMPLETED","Завершенный"
+"ARCHIVED","Архивный"

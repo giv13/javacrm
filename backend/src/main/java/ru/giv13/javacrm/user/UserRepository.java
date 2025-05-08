@@ -8,16 +8,20 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    @EntityGraph(attributePaths = "roles")
+    @EntityGraph(attributePaths = "roles.permissions")
     Optional<User> findByUsernameOrEmail(String username, String email);
 
     default Optional<User> findByUsernameOrEmail(String username) {
         return findByUsernameOrEmail(username, username);
     };
 
-    @EntityGraph(attributePaths = "roles")
+    @EntityGraph(attributePaths = "roles.permissions")
     @NonNull
     List<User> findAll();
+
+    @EntityGraph(attributePaths = "roles.permissions")
+    @NonNull
+    Optional<User> findById(@NonNull Integer id);
 
     boolean existsByUsernameAndIdNot(String username, Integer id);
 

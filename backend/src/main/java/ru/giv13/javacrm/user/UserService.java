@@ -55,7 +55,9 @@ public class UserService implements UserDetailsService {
             userUpdateDto.setPassword(passwordEncoder.encode(userUpdateDto.getPassword()));
         }
         modelMapper.map(userUpdateDto, user);
-        user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
+        if (userUpdateDto.getRoles() != null) {
+            user.setRoles(new HashSet<>(roleRepository.findAllById(userUpdateDto.getRoles())));
+        }
         user.setRefresh(null);
         return modelMapper.map(userRepository.save(user), UserDto.class);
     }
