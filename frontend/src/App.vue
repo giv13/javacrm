@@ -3,6 +3,11 @@
   <RouterView v-else />
 </template>
 
+<script setup>
+import Forbidden from './pages/403.vue'
+import { useRoute } from 'vue-router'
+</script>
+
 <style lang="scss">
 #app {
   font-family: 'Inter', Avenir, Helvetica, Arial, sans-serif;
@@ -15,8 +20,3 @@ body {
   min-width: 20rem;
 }
 </style>
-
-<script setup>
-  import Forbidden from './pages/403.vue';
-  import { useRoute } from "vue-router";
-</script>

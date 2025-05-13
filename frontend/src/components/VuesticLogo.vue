@@ -1,5 +1,5 @@
 <template>
-  <h1 class="va-h3" :style="{ 'color': color }">javaCRM</h1>
+  <h1 class="va-h3" :style="{ color: color }">javaCRM</h1>
 </template>
 
 <script lang="ts" setup>

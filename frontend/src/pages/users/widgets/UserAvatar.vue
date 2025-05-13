@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
-import { EmptyUser } from '../types'
+import { EmptyUser, User } from '../types'
 
 const avatarColor = (userName: string) => {
   if (!userName) return 'default'
@@ -11,7 +11,7 @@ const avatarColor = (userName: string) => {
 
 defineProps({
   user: {
-    type: Object as PropType<EmptyUser>,
+    type: Object as PropType<EmptyUser | User>,
     required: true,
   },
   size: {
@@ -22,7 +22,8 @@ defineProps({
 
 const avatarPath = (avatar: string) => {
   if (!avatar) return ''
-  if (/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(avatar)) return 'data:image/jpeg;base64,' + avatar
+  if (/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(avatar))
+    return 'data:image/jpeg;base64,' + avatar
   return avatar
 }
 </script>

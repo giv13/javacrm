@@ -5,7 +5,7 @@ import EditUserForm from './widgets/EditUserForm.vue'
 import { User } from './types'
 import { useUsers } from './composables/useUsers'
 import { useModal, useToast } from 'vuestic-ui'
-import { useProjectsStore } from "../../stores/projects";
+import { useProjectsStore } from '../../stores/projects'
 import { useUserStore } from '../../stores/user-store'
 import { useUsersStore } from '../../stores/users'
 
@@ -40,7 +40,7 @@ watchEffect(() => {
   }
 })
 
-const onUserSaved = async (user: User, errors: Object, ok: Function) => {
+const onUserSaved = async (user: User, errors: object, ok: () => void) => {
   if (userToEdit.value) {
     await usersApi.update(user, errors)
     notify({
@@ -56,7 +56,7 @@ const onUserSaved = async (user: User, errors: Object, ok: Function) => {
     })
   }
   if (user.avatar.startsWith('blob:') || (!user.avatar && usersStore.items.find(({ id }) => id === user.id)?.avatar)) {
-    const avatar = user.avatar.startsWith('blob:') ? await fetch(user.avatar).then((r) => r.blob()) : "";
+    const avatar = user.avatar.startsWith('blob:') ? await fetch(user.avatar).then((r) => r.blob()) : ''
     user.avatar = await usersApi.uploadAvatar(user, avatar)
     notify({
       message: `Изображение для пользователя ${user.username} обновлено`,
@@ -116,7 +116,9 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             </template>
           </VaInput>
         </div>
-        <VaButton @click="showAddUserModal" v-show="userStore.hasAuthorities(['USER_CREATE'])">Добавить пользователя</VaButton>
+        <VaButton v-show="userStore.hasAuthorities(['USER_CREATE'])" @click="showAddUserModal"
+          >Добавить пользователя</VaButton
+        >
       </div>
 
       <UsersTable

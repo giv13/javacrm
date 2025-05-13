@@ -1,11 +1,11 @@
 import { useUsers } from '../../users/composables/useUsers'
 import { Project } from '../types'
-import { ref } from "vue";
-import type { Filters } from "../../../data/pages/users";
+import { ref } from 'vue'
+import type { Filters } from '../../../data/pages/users'
 
 export function useProjectUsers() {
   const { users } = useUsers({
-    filters: ref<Partial<Filters>>({ isActive: undefined })
+    filters: ref<Partial<Filters>>({ isActive: undefined }),
   })
 
   const getUserById = (userId: number) => {
@@ -20,7 +20,8 @@ export function useProjectUsers() {
 
   const avatarPath = (avatar: string) => {
     if (!avatar) return ''
-    if (/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(avatar)) return 'data:image/jpeg;base64,' + avatar
+    if (/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(avatar))
+      return 'data:image/jpeg;base64,' + avatar
     return avatar
   }
 

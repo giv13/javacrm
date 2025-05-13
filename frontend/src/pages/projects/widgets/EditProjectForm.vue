@@ -24,8 +24,8 @@ const defaultNewProject: EmptyProject = {
 const formErrors = reactive({
   name: [],
   status: [],
-  responsible: []
-});
+  responsible: [],
+})
 
 const newProject = ref({ ...defaultNewProject })
 
@@ -71,26 +71,26 @@ const participantsFiltersSearch = ref('')
 <template>
   <VaForm v-slot="{ isValid, validate }" class="flex flex-col gap-2">
     <VaInput
-      :error="formErrors.name.length > 0"
-      :errorMessages="formErrors.name"
-      @input="formErrors.name = []"
       v-model="newProject.name"
+      :error="formErrors.name.length > 0"
+      :error-messages="formErrors.name"
       label="Наименование"
       name="name"
+      @input="formErrors.name = []"
     />
     <VaTextarea v-model="newProject.description" label="Описание" name="description" />
     <VaSelect
-      :error="formErrors.responsible.length > 0"
-      :errorMessages="formErrors.responsible"
-      @update:modelValue="formErrors.responsible = []"
       v-model="newProject.responsible"
       v-model:search="ownerFiltersSearch"
+      :error="formErrors.responsible.length > 0"
+      :error-messages="formErrors.responsible"
       searchable
       label="Ответственный"
       value-by="id"
       text-by="name"
       :options="usersStore.items"
       name="responsible"
+      @update:modelValue="formErrors.responsible = []"
     >
       <template #content="{ value: user }">
         <div v-if="user" :key="user.id" class="flex items-center gap-1 mr-4">
@@ -121,15 +121,15 @@ const participantsFiltersSearch = ref('')
       </template>
     </VaSelect>
     <VaSelect
-      :error="formErrors.status.length > 0"
-      :errorMessages="formErrors.status"
-      @update:modelValue="formErrors.status = []"
       v-model="newProject.status"
+      :error="formErrors.status.length > 0"
+      :error-messages="formErrors.status"
       label="Статус"
       value-by="id"
       text-by="displayName"
       :options="statuses"
       name="status"
+      @update:modelValue="formErrors.status = []"
     >
       <template #content="{ value }">
         <ProjectStatusBadge v-if="value" :status="value" />
@@ -137,7 +137,9 @@ const participantsFiltersSearch = ref('')
     </VaSelect>
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
       <VaButton preset="secondary" color="secondary" @click="emit('close')">Отмена</VaButton>
-      <VaButton :disabled="!isValid" @click="validate() && emit('save', newProject, formErrors)">{{ saveButtonLabel }}</VaButton>
+      <VaButton :disabled="!isValid" @click="validate() && emit('save', newProject, formErrors)">{{
+        saveButtonLabel
+      }}</VaButton>
     </div>
   </VaForm>
 </template>

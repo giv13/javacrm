@@ -52,8 +52,20 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
         </div>
         <VaDivider class="my-6" />
         <div class="flex justify-between">
-          <VaButton preset="secondary" icon="mso-edit" color="secondary" @click="$emit('edit', project)" v-show="userStore.hasAuthorities(['PROJECT_UPDATE'])" />
-          <VaButton preset="secondary" icon="mso-delete" color="danger" @click="$emit('delete', project)" v-show="userStore.hasAuthorities(['PROJECT_DELETE'])" />
+          <VaButton
+            v-show="userStore.hasAuthorities(['PROJECT_UPDATE'])"
+            preset="secondary"
+            icon="mso-edit"
+            color="secondary"
+            @click="$emit('edit', project)"
+          />
+          <VaButton
+            v-show="userStore.hasAuthorities(['PROJECT_DELETE'])"
+            preset="secondary"
+            icon="mso-delete"
+            color="danger"
+            @click="$emit('delete', project)"
+          />
         </div>
       </VaCardContent>
     </VaCard>

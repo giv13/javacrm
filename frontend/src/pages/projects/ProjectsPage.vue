@@ -41,7 +41,7 @@ const createNewProject = () => {
 
 const { init: notify } = useToast()
 
-const onProjectSaved = async (project: Project, errors: Object, ok: Function) => {
+const onProjectSaved = async (project: Project, errors: object, ok: () => void) => {
   if (projectToEdit.value) {
     await update(project, errors)
     notify({
@@ -115,7 +115,9 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             ]"
           />
         </div>
-        <VaButton icon="add" @click="createNewProject" v-show="userStore.hasAuthorities(['PROJECT_CREATE'])">Добавить проект</VaButton>
+        <VaButton v-show="userStore.hasAuthorities(['PROJECT_CREATE'])" icon="add" @click="createNewProject"
+          >Добавить проект</VaButton
+        >
       </div>
 
       <ProjectCards

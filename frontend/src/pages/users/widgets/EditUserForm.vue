@@ -33,7 +33,7 @@ const formErrors = reactive({
   email: [],
   password: [],
   passwordConfirmation: [],
-});
+})
 
 const newUser = ref({ ...defaultNewUser })
 
@@ -43,9 +43,7 @@ const isFormHasUnsavedChanges = computed(() => {
       return false
     }
 
-    return (
-      newUser.value[key as keyof EmptyUser] !== (props.user ?? defaultNewUser)?.[key as keyof EmptyUser]
-    )
+    return newUser.value[key as keyof EmptyUser] !== (props.user ?? defaultNewUser)?.[key as keyof EmptyUser]
   })
 })
 
@@ -64,7 +62,7 @@ watch(
 
     newUser.value = {
       ...props.user,
-      roles: props.user.roles.filter(role => roles.value.find(({ id }) => id === role.id)).map(role => role.id),
+      roles: props.user.roles.filter((role) => roles.value.find(({ id }) => id === role.id)).map((role) => role.id),
       avatar: props.user.avatar || '',
     }
   },
@@ -82,10 +80,19 @@ watch(avatar, (newAvatar) => {
 })
 
 const emit = defineEmits(['save', 'close'])
+
+const clearAvatar = () => {
+  avatar.value = undefined
+  newUser.value.avatar = ''
+}
 </script>
 
 <template>
-  <VaForm v-slot="{ isValid, validate }" ref="add-user-form" class="flex-col justify-start items-start gap-4 inline-flex w-full">
+  <VaForm
+    v-slot="{ isValid, validate }"
+    ref="add-user-form"
+    class="flex-col justify-start items-start gap-4 inline-flex w-full"
+  >
     <VaFileUpload
       v-model="avatar"
       type="single"
@@ -101,39 +108,39 @@ const emit = defineEmits(['save', 'close'])
         size="small"
         icon="delete"
         class="z-10"
-        @click.stop="avatar = undefined; newUser.avatar = ''"
+        @click.stop="clearAvatar"
       />
     </VaFileUpload>
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
-          :error="formErrors.name.length > 0"
-          :errorMessages="formErrors.name"
-          @input="formErrors.name = []"
           v-model="newUser.name"
+          :error="formErrors.name.length > 0"
+          :error-messages="formErrors.name"
           label="Имя"
           class="w-full sm:w-1/2"
           name="name"
+          @input="formErrors.name = []"
         />
         <VaInput
-          :error="formErrors.username.length > 0"
-          :errorMessages="formErrors.username"
-          @input="formErrors.username = []"
           v-model="newUser.username"
+          :error="formErrors.username.length > 0"
+          :error-messages="formErrors.username"
           label="Имя пользователя"
           class="w-full sm:w-1/2"
           name="username"
+          @input="formErrors.username = []"
         />
       </div>
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
-          :error="formErrors.email.length > 0"
-          :errorMessages="formErrors.email"
-          @input="formErrors.email = []"
           v-model="newUser.email"
+          :error="formErrors.email.length > 0"
+          :error-messages="formErrors.email"
           label="E-mail"
           class="w-full sm:w-1/2"
           name="email"
+          @input="formErrors.email = []"
         />
         <VaSelect
           v-model="newUser.roles"
@@ -153,13 +160,13 @@ const emit = defineEmits(['save', 'close'])
           <VaInput
             v-model="newUser.password"
             :error="formErrors.password.length > 0"
-            :errorMessages="formErrors.password"
-            :errorCount="3"
-            @input="formErrors.password = []"
+            :error-messages="formErrors.password"
+            :error-count="3"
             :type="isPasswordVisible.value ? 'text' : 'password'"
             class="w-full sm:w-1/2"
             label="Новый пароль"
             name="password"
+            @input="formErrors.password = []"
             @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
           >
             <template #appendInner>
@@ -175,12 +182,12 @@ const emit = defineEmits(['save', 'close'])
           <VaInput
             v-model="newUser.passwordConfirmation"
             :error="formErrors.passwordConfirmation.length > 0"
-            :errorMessages="formErrors.passwordConfirmation"
-            @input="formErrors.passwordConfirmation = []"
+            :error-messages="formErrors.passwordConfirmation"
             :type="isPasswordVisible.value ? 'text' : 'password'"
             class="w-full sm:w-1/2"
             label="Повторите новый пароль"
             name="passwordConfirmation"
+            @input="formErrors.passwordConfirmation = []"
             @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
           >
             <template #appendInner>
@@ -199,7 +206,9 @@ const emit = defineEmits(['save', 'close'])
       <VaTextarea v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
         <VaButton preset="secondary" color="secondary" @click="emit('close')">Отмена</VaButton>
-        <VaButton :disabled="!isValid" @click="validate() && emit('save', newUser, formErrors)">{{ saveButtonLabel }}</VaButton>
+        <VaButton :disabled="!isValid" @click="validate() && emit('save', newUser, formErrors)">{{
+          saveButtonLabel
+        }}</VaButton>
       </div>
     </div>
   </VaForm>

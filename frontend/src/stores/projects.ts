@@ -24,12 +24,12 @@ export const useProjectsStore = defineStore('projects', {
       this.pagination = pagination
     },
 
-    async add(project: Omit<Project, 'id' | 'createdAt'>, errors: Object) {
+    async add(project: Omit<Project, 'id' | 'createdAt'>, errors: object) {
       const newProject = await addProject(project, errors)
       this.items.push(newProject)
     },
 
-    async update(project: Omit<Project, 'createdAt'>, errors: Object) {
+    async update(project: Omit<Project, 'createdAt'>, errors: object) {
       const updatedProject = await updateProject(project, errors)
       const index = this.items.findIndex(({ id }) => id === project.id)
       this.items.splice(index, 1, updatedProject)

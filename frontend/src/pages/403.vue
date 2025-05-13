@@ -13,9 +13,7 @@ import NotFoundImage from '../components/NotFoundImage.vue'
       <NotFoundImage />
       <h1 class="va-h1 text-center sm:text-5xl text-4xl">403 - Доступ запрещен</h1>
 
-      <p class="text-center">
-        У вас нет доступа к этой странице.
-      </p>
+      <p class="text-center">У вас нет доступа к этой странице.</p>
 
       <div class="flex flex-col sm:flex-row gap-4">
         <VaButton to="/">На главную</VaButton>

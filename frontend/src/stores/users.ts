@@ -31,13 +31,13 @@ export const useUsersStore = defineStore('users', {
       this.pagination = pagination
     },
 
-    async add(user: User, filters: Ref<Partial<Filters>>, errors: Object) {
+    async add(user: User, filters: Ref<Partial<Filters>>, errors: object) {
       const newUser = await addUser(user, errors)
       await this.getAll({ filters: unref(filters) })
       return newUser
     },
 
-    async update(user: User, filters: Ref<Partial<Filters>>, errors: Object) {
+    async update(user: User, filters: Ref<Partial<Filters>>, errors: object) {
       const updatedUser = await updateUser(user, errors)
       await this.getAll({ filters: unref(filters) })
       return updatedUser

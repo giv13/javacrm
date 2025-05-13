@@ -14,7 +14,8 @@ import NotFoundImage from '../components/NotFoundImage.vue'
       <h1 class="va-h1 text-center sm:text-5xl text-4xl">404 - Страница не найдена</h1>
 
       <p class="text-center">
-        Возможно, вы ввели неверный URL страницы, а может она переехала в другой раздел, временно недоступна или удалена.
+        Возможно, вы ввели неверный URL страницы, а может она переехала в другой раздел, временно недоступна или
+        удалена.
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4">

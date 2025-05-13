@@ -15,9 +15,10 @@ const columns = defineVaDataTableColumns([
   { label: 'Участники', key: 'participants', sortable: true },
   { label: 'Статус', key: 'status', sortable: true },
   { label: 'Дата создания', key: 'createdAt', sortable: true },
+  { label: ' ', key: 'actions', align: 'right' },
 ])
-if (userStore.hasAuthorities(['PROJECT_UPDATE', 'PROJECT_DELETE'])) {
-  columns.push({ label: ' ', key: 'actions', align: 'right' })
+if (!userStore.hasAuthorities(['PROJECT_UPDATE', 'PROJECT_DELETE'])) {
+  columns.pop()
 }
 
 const props = defineProps({
@@ -89,29 +90,30 @@ const { getUserById, getParticipantsOptions } = inject<any>('ProjectsPage')
       <template #cell(actions)="{ rowData }">
         <div class="flex gap-2 justify-end">
           <VaButton
+            v-show="userStore.hasAuthorities(['PROJECT_UPDATE'])"
             preset="primary"
             size="small"
             color="primary"
             icon="mso-edit"
             aria-label="Редактировать проект"
             @click="$emit('edit', rowData as Project)"
-            v-show="userStore.hasAuthorities(['PROJECT_UPDATE'])"
           />
           <VaButton
+            v-show="userStore.hasAuthorities(['PROJECT_DELETE'])"
             preset="primary"
             size="small"
             icon="mso-delete"
             color="danger"
             aria-label="Удалить проект"
             @click="$emit('delete', rowData as Project)"
-            v-show="userStore.hasAuthorities(['PROJECT_DELETE'])"
           />
         </div>
       </template>
     </VaDataTable>
     <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
       <div>
-        <b>Всего результатов: {{ $props.pagination.total }}</b>. Результатов на странице:
+        <b>Всего результатов: {{ $props.pagination.total }}</b
+        >. Результатов на странице:
         <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
       </div>
 

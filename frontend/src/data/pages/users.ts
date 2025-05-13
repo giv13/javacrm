@@ -19,12 +19,16 @@ export type Filters = {
 
 export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>) => {
   const { isActive, search } = filters
-  let filteredUsers: User[] = await get(api.allUsers());
+  let filteredUsers: User[] = await get(api.allUsers())
 
   filteredUsers = filteredUsers.filter((user) => isActive === undefined || user.active === isActive)
 
   if (search) {
-    filteredUsers = filteredUsers.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()) || user.username.toLowerCase().includes(search.toLowerCase()))
+    filteredUsers = filteredUsers.filter(
+      (user) =>
+        user.name.toLowerCase().includes(search.toLowerCase()) ||
+        user.username.toLowerCase().includes(search.toLowerCase()),
+    )
   }
 
   const { page = 1, perPage = 10 } = filters || {}
@@ -38,11 +42,11 @@ export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>)
   }
 }
 
-export const addUser = async (user: User, errors: Object) => {
+export const addUser = async (user: User, errors: object) => {
   return await post(api.allUsers(), user, errors)
 }
 
-export const updateUser = async (user: User, errors: Object) => {
+export const updateUser = async (user: User, errors: object) => {
   return await put(api.user(user.id), user, errors)
 }
 

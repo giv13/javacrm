@@ -13,7 +13,7 @@ export type Sorting = {
 }
 
 export const getProjects = async (options: Partial<Sorting> & Pagination) => {
-  const projects: Project[] = await get(api.allProjects());
+  const projects: Project[] = await get(api.allProjects())
 
   return {
     data: projects,
@@ -25,11 +25,11 @@ export const getProjects = async (options: Partial<Sorting> & Pagination) => {
   }
 }
 
-export const addProject = async (project: Omit<Project, 'id' | 'createdAt'>, errors: Object) => {
+export const addProject = async (project: Omit<Project, 'id' | 'createdAt'>, errors: object) => {
   return post(api.allProjects(), project, errors)
 }
 
-export const updateProject = async (project: Omit<Project, 'createdAt'>, errors: Object) => {
+export const updateProject = async (project: Omit<Project, 'createdAt'>, errors: object) => {
   return put(api.project(project.id), project, errors)
 }
 

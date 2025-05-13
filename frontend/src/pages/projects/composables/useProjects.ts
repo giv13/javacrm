@@ -74,7 +74,7 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
 
     fetch,
 
-    async add(project: Omit<Project, 'id' | 'createdAt'>, errors: Object) {
+    async add(project: Omit<Project, 'id' | 'createdAt'>, errors: object) {
       isLoading.value = true
       try {
         await projectsStore.add(project, errors)
@@ -84,7 +84,7 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
       }
     },
 
-    async update(project: Omit<Project, 'createdAt'>, errors: Object) {
+    async update(project: Omit<Project, 'createdAt'>, errors: object) {
       isLoading.value = true
       try {
         await projectsStore.update(project, errors)

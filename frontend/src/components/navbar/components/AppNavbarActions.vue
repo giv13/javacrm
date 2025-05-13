@@ -10,7 +10,6 @@ import ProfileDropdown from './dropdowns/ProfileDropdown.vue'
 defineProps({
   isMobile: { type: Boolean, default: false },
 })
-
 </script>
 
 <style lang="scss">

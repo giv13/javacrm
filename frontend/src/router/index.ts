@@ -92,8 +92,8 @@ router.beforeEach((to, from, next) => {
   } else if (!userStore.hasAuthorities(to.meta.authorities as string[])) {
     to.meta.forbidden = true
     next()
-  } else if (to.matched.some(r => r.name === 'auth') && userStore.auth) {
-    next("/")
+  } else if (to.matched.some((r) => r.name === 'auth') && userStore.auth) {
+    next('/')
   } else {
     next()
   }

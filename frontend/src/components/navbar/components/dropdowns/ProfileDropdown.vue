@@ -14,7 +14,10 @@
         :style="{ '--hover-color': hoverColor }"
       >
         <VaList v-for="group in options" :key="group.name">
-          <header v-if="group.title || group.name" class="uppercase text-[var(--va-secondary)] opacity-80 font-bold text-xs px-4">
+          <header
+            v-if="group.title || group.name"
+            class="uppercase text-[var(--va-secondary)] opacity-80 font-bold text-xs px-4"
+          >
             {{ group.title || t(`user.${group.name}`) }}
           </header>
           <VaListItem
@@ -22,7 +25,7 @@
             :key="item.name"
             class="menu-item px-4 text-base cursor-pointer h-8"
             v-bind="resolveLinkAttribute(item)"
-            @click="handleClick(item.click)"
+            @click="item.name === 'logout' ? handleLogout() : null"
           >
             <VaIcon :name="item.icon" class="pr-1" color="secondary" />
             {{ t(`user.${item.name}`) }}
@@ -48,16 +51,12 @@ const hoverColor = computed(() => setHSLAColor(colors.focus, { a: 0.1 }))
 
 const { t } = useI18n()
 
-const handleClick = function(fn) {
-  this[fn]()
-}
-
 const { push } = useRouter()
 const { init } = useToast()
 const { logout } = useUserStore()
 
-const submit = () => {
-  return post(api.logout()).finally(r => {
+const handleLogout = () => {
+  return post(api.logout()).finally(() => {
     logout()
     init({ message: 'Вы вышли из системы', color: 'success' })
     push({ name: 'login' })
@@ -95,7 +94,6 @@ withDefaults(
         list: [
           {
             name: 'logout',
-            click: 'submit',
             icon: 'mso-logout',
           },
         ],

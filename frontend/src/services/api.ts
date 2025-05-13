@@ -1,5 +1,5 @@
-import { useToast } from 'vuestic-ui';
-import { useUserStore } from "../stores/user-store";
+import { useToast } from 'vuestic-ui'
+import { useUserStore } from '../stores/user-store'
 import router from '../router/index'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -43,8 +43,14 @@ export const del = (url: string) => {
 }
 
 let isRefreshRequesting = false
-let requestsToRefresh: Function[] = []
-const request = async (url: string, method = 'GET', data = {}, errors: Record<string, string[]> = {}, isJson = true) => {
+let requestsToRefresh: (() => void)[] = []
+const request = async (
+  url: string,
+  method = 'GET',
+  data = {},
+  errors: Record<string, string[]> = {},
+  isJson = true,
+) => {
   const options: RequestInit = {
     method,
     credentials: 'include',
@@ -58,12 +64,12 @@ const request = async (url: string, method = 'GET', data = {}, errors: Record<st
     options.body = data as FormData
   }
   return await fetch(url, options)
-    .then(r => r.json())
-    .then(r => {
+    .then((r) => r.json())
+    .then((r) => {
       if (!r.success) throw r
       return r.data
     })
-    .catch(r => {
+    .catch((r) => {
       const error = r.error
       if (r.status == 401) {
         if (!isRefreshRequesting) {
@@ -72,20 +78,20 @@ const request = async (url: string, method = 'GET', data = {}, errors: Record<st
             method: 'POST',
             credentials: 'include',
           })
-          .then(r => r.json())
-          .then(r => {
-            if (r.status == 200) {
-              requestsToRefresh.forEach(r => r())
-            } else {
-              useUserStore().logout()
-              init({ message: error, color: 'danger' })
-              router.push({ name: 'login' })
-            }
-          })
-          .finally(() => {
-            requestsToRefresh = []
-            isRefreshRequesting = false
-          })
+            .then((r) => r.json())
+            .then((r) => {
+              if (r.status == 200) {
+                requestsToRefresh.forEach((r) => r())
+              } else {
+                useUserStore().logout()
+                init({ message: error, color: 'danger' })
+                router.push({ name: 'login' })
+              }
+            })
+            .finally(() => {
+              requestsToRefresh = []
+              isRefreshRequesting = false
+            })
         }
         return new Promise((resolve, reject) => {
           requestsToRefresh.push(() => {
@@ -98,7 +104,7 @@ const request = async (url: string, method = 'GET', data = {}, errors: Record<st
       } else if (typeof error === 'object') {
         for (const [field, message] of Object.entries(error)) {
           if (field in errors && typeof message === 'string') {
-            errors[field] = message.split("|")
+            errors[field] = message.split('|')
           }
         }
       }

@@ -8,23 +8,23 @@
     <VaInput
       v-model="formData.username"
       :error="formErrors.username.length > 0"
-      :errorMessages="formErrors.username"
-      @input="formErrors.username = []"
+      :error-messages="formErrors.username"
       class="mb-4"
       label="Имя пользователя"
       type="text"
       name="username"
+      @input="formErrors.username = []"
     />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
         v-model="formData.password"
         :error="formErrors.password.length > 0"
-        :errorMessages="formErrors.password"
-        @input="formErrors.password = []"
+        :error-messages="formErrors.password"
         :type="isPasswordVisible.value ? 'text' : 'password'"
         class="mb-4"
         label="Пароль"
         name="password"
+        @input="formErrors.password = []"
         @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
@@ -64,14 +64,14 @@ const formData = reactive({
 const formErrors = reactive({
   username: [],
   password: [],
-});
+})
 
 const submit = () => {
   if (validate()) {
-    return post(api.login(), formData, formErrors).then(r => {
+    return post(api.login(), formData, formErrors).then((r) => {
       login(r)
       init({ message: 'Вы вошли в систему', color: 'success' })
-      const redirectPath = Array.isArray(query.redirect) ? query.redirect[0] : query.redirect;
+      const redirectPath = Array.isArray(query.redirect) ? query.redirect[0] : query.redirect
       push(redirectPath || '/')
     })
   }

@@ -85,7 +85,7 @@ export const useUsers = (options?: {
 
     fetch,
 
-    async add(user: User, errors: Object) {
+    async add(user: User, errors: object) {
       isLoading.value = true
       try {
         return await usersStore.add(user, filters, errors)
@@ -94,7 +94,7 @@ export const useUsers = (options?: {
       }
     },
 
-    async update(user: User, errors: Object) {
+    async update(user: User, errors: object) {
       isLoading.value = true
       try {
         return await usersStore.update(user, filters, errors)

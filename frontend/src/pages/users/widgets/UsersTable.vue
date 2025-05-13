@@ -15,9 +15,10 @@ const columns = defineVaDataTableColumns([
   { label: 'E-mail', key: 'email', sortable: true },
   { label: 'Роли', key: 'roles', sortable: true },
   { label: 'Проекты', key: 'projects', sortable: true },
+  { label: ' ', key: 'actions', align: 'right' },
 ])
-if (userStore.hasAuthorities(['USER_UPDATE', 'USER_DELETE'])) {
-  columns.push({ label: ' ', key: 'actions', align: 'right' })
+if (!userStore.hasAuthorities(['USER_UPDATE', 'USER_DELETE'])) {
+  columns.pop()
 }
 
 const props = defineProps({
@@ -47,8 +48,8 @@ const sortByVModel = useVModel(props, 'sortBy', emit)
 const sortingOrderVModel = useVModel(props, 'sortingOrder', emit)
 
 const roleColors: Record<Role['name'], string> = {
-  'ADMIN': 'danger',
-  'USER': 'background-element',
+  ADMIN: 'danger',
+  USER: 'background-element',
 }
 
 const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage))
@@ -124,7 +125,7 @@ const formatProjectNames = (projects: Project['id'][]) => {
     </template>
 
     <template #cell(roles)="{ rowData }">
-      <template v-for="(role, index) in rowData.roles">
+      <template v-for="(role, index) in rowData.roles" :key="role.id">
         <VaBadge :text="role.displayName" :color="roleColors[role.name]" :class="{ 'ml-2': index }" />
       </template>
     </template>
@@ -138,21 +139,21 @@ const formatProjectNames = (projects: Project['id'][]) => {
     <template #cell(actions)="{ rowData }">
       <div class="flex gap-2 justify-end">
         <VaButton
+          v-show="userStore.hasAuthorities(['USER_UPDATE'])"
           preset="primary"
           size="small"
           icon="mso-edit"
           aria-label="Редактировать пользователя"
           @click="$emit('edit-user', rowData as User)"
-          v-show="userStore.hasAuthorities(['USER_UPDATE'])"
         />
         <VaButton
+          v-show="userStore.hasAuthorities(['USER_DELETE'])"
           preset="primary"
           size="small"
           icon="mso-delete"
           color="danger"
           aria-label="Удалить пользователя"
           @click="onUserDelete(rowData as User)"
-          v-show="userStore.hasAuthorities(['USER_DELETE'])"
         />
       </div>
     </template>
@@ -160,7 +161,8 @@ const formatProjectNames = (projects: Project['id'][]) => {
 
   <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
     <div>
-      <b>Всего результатов: {{ $props.pagination.total }}</b>. Результатов на странице:
+      <b>Всего результатов: {{ $props.pagination.total }}</b
+      >. Результатов на странице:
       <VaSelect v-model="$props.pagination.perPage" class="!w-20" :options="[10, 50, 100]" />
     </div>
 
