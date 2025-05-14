@@ -3,10 +3,13 @@ spring:
     name: javaCRM
     version: 1.0.0
 
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:javacrm}
-    username: ${DB_USER:javacrm}
-    password: ${DB_PASSWORD:javacrm}
+    url: jdbc:postgresql://${DB_HOST:localhost}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 
   jackson:
     mapper:
@@ -29,7 +32,7 @@ cors:
 
 security:
   jwt:
-    secret: 3d6f7f4db9a7ca65e6cbbd5c60a9b6f88e1e9b2a7b77b4a1e5e8e7f2c8e1e3d9
+    secret: ${JWT_SECRET}
     expiration: 15m
     token-name: token
     refresh:
