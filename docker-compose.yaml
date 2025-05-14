@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
+    restart: always
+    ports:
+      - '9000:9000'
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    restart: always
+    environment:
+      DB_HOST: db
+      CORS_ORIGIN: http://localhost:9000
+    depends_on:
+      - db
+  db:
+    image: postgres:17.5-alpine
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: javacrm
+      POSTGRES_USER: javacrm
+      POSTGRES_PASSWORD: javacrm
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
