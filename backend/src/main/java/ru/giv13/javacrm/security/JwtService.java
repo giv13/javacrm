@@ -42,7 +42,7 @@ public class JwtService {
         String token = generateToken(user, tokenExpiration);
         Cookie cookie = new Cookie(tokenName, token);
         cookie.setMaxAge((int) tokenExpiration.toSeconds());
-        cookie.setSecure(true);
+        //cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
