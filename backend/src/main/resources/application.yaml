@@ -42,3 +42,8 @@ security:
 server:
   tomcat:
     max-swallow-size: -1
+  forward-headers-strategy: framework
+
+springdoc:
+  api-docs:
+    path: /swagger-ui/json

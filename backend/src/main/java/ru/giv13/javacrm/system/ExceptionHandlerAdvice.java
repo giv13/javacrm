@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 public class ExceptionHandlerAdvice implements ResponseBodyAdvice<Object> {
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private final String[] excludedPaths = {
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/api/swagger-ui/**"
     };
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
