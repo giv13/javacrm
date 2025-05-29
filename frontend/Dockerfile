@@ -5,7 +5,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY . ./
+COPY public public
+COPY src src
+COPY *.?s* index.html ./
 ARG VITE_API_BASE_URL
 RUN npm run build
 
