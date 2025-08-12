@@ -53,14 +53,9 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     private Set<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "responsible_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "responsible")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Project> projects;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "project_participant", joinColumns = @JoinColumn(name = "participant_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private List<Project> participation;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
